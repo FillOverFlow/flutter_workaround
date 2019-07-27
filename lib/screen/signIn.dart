@@ -62,7 +62,7 @@ class _SignInPageState extends State<SignInPage> {
       formState.save();
       try {
         FirebaseUser use = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email,password: _password);
-        Navigator.push(context,MaterialPageRoute(builder:(context) => HomePage()));
+        Navigator.push(context,MaterialPageRoute(builder:(context) => HomeScreen()));
       } catch (e) {
         print(e.message);
       }

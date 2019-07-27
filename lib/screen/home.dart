@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:work_around/Pages/running_history.dart';
-import 'package:work_around/Pages/running.dart';
-import 'package:work_around/Pages/send_data_firebase.dart';
-import 'package:work_around/Pages/profile.dart';
+import 'package:work_around/screen/running_history.dart';
+import 'package:work_around/screen/running.dart';
+import 'package:work_around/screen/profile.dart';
+import 'package:work_around/screen/set_time_running.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -40,6 +40,14 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(context,MaterialPageRoute(builder:(context) => RunningPage()));
                 }
             ),
+             new ListTile(
+              title:new Text("ตั้งเวลาการวิ่ง"),
+              trailing: new Icon(Icons.access_alarm),
+              onTap:() { 
+                Navigator.of(context).pop();
+                Navigator.push(context,MaterialPageRoute(builder:(context) => RunningHistory()));
+                }
+            ),
             new ListTile(
               title:new Text("ประวัติการวิ่ง"),
               trailing: new Icon(Icons.history),
@@ -62,26 +70,28 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: 
-        Container(
-          child:
-            Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("ส่วนสูง:xxx"),
-                  Text("น้ำหนัก:xxx"),
-                  Card(
-                    shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15.0)),
-                    elevation: 3.0,
-                    child: Column(
-                      children: <Widget>[
-                        Text("knowleadge"),
-                        Image.asset("assets/images/running.jpg")
-                      ],
+        Center(
+          child: Container(
+            child:
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("ส่วนสูง:xxx"),
+                    Text("น้ำหนัก:xxx"),
+                    Card(
+                      shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15.0)),
+                      elevation: 3.0,
+                      child: Column(
+                        children: <Widget>[
+                          Text("knowleadge"),
+                          Image.asset("assets/images/running.jpg")
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-            ),
+                  ],
+              ),
       ),
+        ),
     );
   }
 

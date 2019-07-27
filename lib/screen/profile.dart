@@ -65,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
         "width":_width,
         "height":_height
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
       print("add to database successful");
       } catch (e) {
         print(e.message);
