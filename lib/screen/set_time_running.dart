@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+
+
 class SetTimeRunning extends StatefulWidget {
   @override
   _SetTimeRunningState createState() => _SetTimeRunningState();
@@ -42,6 +44,16 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
        });
      }
   }
+
+  // _scheduleNotification() async {
+  //   int notificationoId = await ScheduledNotifications.scheduleNotification(
+  //     new DateTime.now().add(new Duration(seconds: 5)).millisecondsSinceEpoch, 
+  //     "ticker", 
+  //     "contentTitle", 
+  //     "content"
+  //     );
+  //   print('alert $notificationoId');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +138,14 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
                           ),
                         ),
                     ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: null, 
+                      child: Text('แจ้งเตือน'),
+                    )
                   ],
                 )
               ],

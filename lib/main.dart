@@ -8,6 +8,7 @@ import 'screen/splash_screen.dart';
 import 'screen/login_design_screen.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'Test/test_notification.dart';
 
 
 
@@ -18,10 +19,11 @@ class MainApp extends StatelessWidget{
   Widget build(BuildContext context){
     return MaterialApp(
       title: 'WorkAroud application',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: SplashScreen(),
+      home: TextNotification(),
       routes: <String,WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
         "/Map":(BuildContext context) => MapScreen()
