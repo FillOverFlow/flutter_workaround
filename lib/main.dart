@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:work_around/screen/google_map_screen.dart';
 import 'package:work_around/screen/home.dart';
@@ -25,7 +26,7 @@ class MainApp extends StatelessWidget{
         "/Login": (BuildContext context) => LoginScreen(),
         "/Map":(BuildContext context) => MapScreen()
         },
-       );
+      );
   }
 }
 
