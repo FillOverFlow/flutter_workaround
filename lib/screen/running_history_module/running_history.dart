@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:work_around/Models/history.dart';
+import 'package:work_around/models/history.dart';
 
 class RunningHistory extends StatefulWidget {
   @override

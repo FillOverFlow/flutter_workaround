@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:work_around/widget/google_map_screen.dart';
-import 'screen/splash_screen.dart';
 import 'package:work_around/screen/authentication_module/login_design_screen.dart';
-import 'test/run_test.dart';
+import 'package:work_around/screen/home.dart';
+import 'package:work_around/widget/google_map_screen.dart';
+import 'package:work_around/screen/settime_module/list_time_running.dart';
 
-
-
-void main() => runApp(MainApp());
-
-class MainApp extends StatelessWidget{
+class TestApp extends StatelessWidget{
   @override 
   Widget build(BuildContext context){
     return MaterialApp(
@@ -17,7 +13,7 @@ class MainApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: SplashScreen(),
+      home: HomeScreen(),
       routes: <String,WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
         "/Map":(BuildContext context) => MapScreen()
@@ -25,7 +21,3 @@ class MainApp extends StatelessWidget{
       );
   }
 }
-
-
-   
-

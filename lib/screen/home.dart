@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:work_around/screen/running_history.dart';
-import 'package:work_around/screen/running.dart';
-import 'package:work_around/screen/profile.dart';
-import 'package:work_around/screen/set_time_running.dart';
+import 'package:work_around/screen/running_history_module/running_history.dart';
+import 'package:work_around/screen/running_module/running.dart';
+import 'package:work_around/screen/settime_module/list_time_running.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -26,7 +25,7 @@ class _HomePageState extends State<HomeScreen> {
                 backgroundColor: Colors.lightBlue,
                 child: new Text("F"),
               ),
-              onDetailsPressed: link_to_profiling,
+              onDetailsPressed: null,
             ),
             new ListTile(
               title: new Text("หน้าแรก"),
@@ -45,7 +44,7 @@ class _HomePageState extends State<HomeScreen> {
               trailing: new Icon(Icons.access_alarm),
               onTap:() { 
                 Navigator.of(context).pop();
-                Navigator.push(context,MaterialPageRoute(builder:(context) => SetTimeRunning()));
+                Navigator.push(context,MaterialPageRoute(builder:(context) => ListNotificationScreen()));
                 }
             ),
             new ListTile(
@@ -95,7 +94,7 @@ class _HomePageState extends State<HomeScreen> {
     );
   }
 
-  void link_to_profiling(){
-    Navigator.push(context,MaterialPageRoute(builder: (context) => ProfilePage()));
-  }
+  // void link_to_profiling(){
+  //   Navigator.push(context,MaterialPageRoute(builder: (context) => ProfilePage()));
+  // }
 }

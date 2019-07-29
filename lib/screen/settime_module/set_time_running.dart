@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 
@@ -12,6 +13,57 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
 
   DateTime _date = new DateTime.now();
   TimeOfDay _time = new TimeOfDay.now();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  
+  String message;
+  String channelId = "1000";
+  String channelName = "FLUTTER_NOTIFICATION_CHANNEL";
+  String channelDescription = "FLUTTER_NOTIFICATION_CHANNEL_DETAIL";
+
+  @override
+  void initState() {
+    message = "No message.";
+    var initializationSettingsAndroid =
+      AndroidInitializationSettings('ic_launcher');
+ 
+    var initializationSettingsIOS = IOSInitializationSettings(
+      onDidReceiveLocalNotification: (id, title, body, payload) {
+      print("onDidReceiveLocalNotification called.");
+     });
+    var initializationSettings = InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+ 
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (payload) {
+      // when user tap on notification.
+      print("onSelectNotification called.");
+      setState(() {
+        message = payload;
+      });
+    });
+    super.initState();
+  }
+
+  sendNotificationTime() async {
+    var timenow = DateTime.now();
+    var scheduledNotificationDateTime =
+        timenow;
+    var androidPlatformChannelSpecifics =
+        new AndroidNotificationDetails('your other channel id',
+            'your other channel name', 'your other channel description');
+    var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+      111,
+      'scheduled title',
+      'scheduled body',
+      scheduledNotificationDateTime,
+      platformChannelSpecifics
+      );
+      print('send.. $scheduledNotificationDateTime');
+  }
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker( 
@@ -112,7 +164,7 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
                   children: <Widget>[
                     Spacer(),
                     RaisedButton(
-                        onPressed: (){ print('time set !!');},
+                        onPressed: sendNotificationTime,
                         padding: const EdgeInsets.all(0.0),
                         child: Container(
                           height: 45,
@@ -140,14 +192,6 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
                     ),
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    RaisedButton(
-                      onPressed: null, 
-                      child: Text('แจ้งเตือน'),
-                    )
-                  ],
-                )
               ],
             ),
           ), 

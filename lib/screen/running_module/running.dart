@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:work_around/screen/google_map_screen.dart';
-import 'package:work_around/screen/timer.dart';
+import 'package:work_around/widget/google_map_screen.dart';
+import 'package:work_around/widget/timer.dart';
+import 'dart:async';
+
 
 class RunningPage extends StatelessWidget {
   RunningPage({Key key}) : super(key: key);
