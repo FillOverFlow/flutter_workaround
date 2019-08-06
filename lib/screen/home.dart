@@ -45,7 +45,7 @@ class _HomePageState extends State<HomeScreen> {
               trailing: new Icon(Icons.access_alarm),
               onTap:() { 
                 Navigator.of(context).pop();
-                Navigator.push(context,MaterialPageRoute(builder:(context) => ListNotificationScreen()));
+                Navigator.push(context,MaterialPageRoute(builder:(context) => ListNotificationScreen(null)));
                 }
             ),
             new ListTile(
