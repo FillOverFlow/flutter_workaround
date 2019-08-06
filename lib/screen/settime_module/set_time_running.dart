@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:work_around/screen/settime_module/schedu.dart';
+import 'list_time_running.dart';
 
 
 class SetTimeRunning extends StatefulWidget {
   @override
   _SetTimeRunningState createState() => _SetTimeRunningState();
+  
 }
 
 class _SetTimeRunningState extends State<SetTimeRunning> {
 
-  DateTime _date = new DateTime.now();
-  TimeOfDay _time = new TimeOfDay.now();
+  DateTime _date;
+  TimeOfDay _time;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  
+
   String message;
   String channelId = "1000";
   String channelName = "FLUTTER_NOTIFICATION_CHANNEL";
@@ -21,6 +24,10 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
 
   @override
   void initState() {
+     setState(() {
+      _date = new DateTime.now();
+      _time = new TimeOfDay.now();
+    });
     message = "No message.";
     var initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
@@ -62,7 +69,8 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
       platformChannelSpecifics
       );
       print('send.. $scheduledNotificationDateTime');
-      Navigator.of(context).pop();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ListNotificationScreen(_date.toString())));
+      
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -163,10 +171,10 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
                 Row(
                   children: <Widget>[
                     Spacer(),
-                    RaisedButton(
-                        onPressed: sendNotificationTime,
-                        padding: const EdgeInsets.all(0.0),
+                    GestureDetector(
+                        onTap: sendNotificationTime,
                         child: Container(
+                          margin: EdgeInsets.all(0.0),
                           height: 45,
                           width: MediaQuery.of(context).size.width/1.2,
                           decoration: BoxDecoration(

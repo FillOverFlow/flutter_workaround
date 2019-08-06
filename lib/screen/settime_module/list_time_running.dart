@@ -7,16 +7,20 @@ import 'package:work_around/screen/settime_module/set_time_running.dart';
 
 class ListNotificationScreen extends StatefulWidget {
   @override
-  _ListNotificationScreenState createState() => _ListNotificationScreenState();
+   final String datetime_string;
+   ListNotificationScreen(this.datetime_string);
+  _ListNotificationScreenState createState() => _ListNotificationScreenState(this.datetime_string);
 }
 
 class _ListNotificationScreenState extends State<ListNotificationScreen> {
+  final String datetime_string;
+  _ListNotificationScreenState(this.datetime_string);  
   /* variable */
   List<String> _scheduList = [];
   Future<List<PendingNotificationRequest>> notificationFuture;
 
-  DateTime _date = new DateTime.now();
-  TimeOfDay _time = new TimeOfDay.now();
+  DateTime _date;
+  TimeOfDay _time;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   final NotificationPlugin _notificationPlugin = NotificationPlugin();
@@ -26,7 +30,12 @@ class _ListNotificationScreenState extends State<ListNotificationScreen> {
   /* fucntion module */
   @override
   void initState() {
+
     message = "No message.";
+    print('you have datetime ${datetime_string}');
+    if(datetime_string != null){
+      _addScheduItems(datetime_string);
+    }
     var initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
  
@@ -49,38 +58,12 @@ class _ListNotificationScreenState extends State<ListNotificationScreen> {
     notificationFuture = _notificationPlugin.getScheduledNotifications();
   }
 
-  void _pushTodoScreen(){
-    //push this page onto the stack 
-    Navigator.of(context).push( 
-      MaterialPageRoute( 
-        builder: (context){
-          return Scaffold( 
-            appBar: AppBar( 
-              title: Text('Add a new Task'),
-            ),
-            body: TextField( 
-              autofocus: true,
-              onSubmitted: (val){
-                _addScheduItems(val);
-                Navigator.pop(context);
-              },
-              decoration: InputDecoration( 
-                hintText: 'Enter something to do ...',
-                contentPadding: const EdgeInsets.all(16.0)
-              ),
-            )
-          );
-        }
-      )
-    );
-  }
-
   void _addScheduItems(String schedu){
-    if(schedu.length > 0){
+    if(schedu.length > 0)
       setState(() {
         _scheduList.add(schedu);
-      });
-    }
+    });
+    
   }
 
   void _removeScheduItem(int index){
@@ -137,10 +120,11 @@ class _ListNotificationScreenState extends State<ListNotificationScreen> {
 
     //logic select time
      if(picked !=null  && picked != _date){
-       print("Date selected ${_date.toString()}");
+       print("Date selected ${picked.toString()}");
        setState(() {
          _date = picked;
        });
+       print("Date change ${_date.toString()}");
      }
   }
 
