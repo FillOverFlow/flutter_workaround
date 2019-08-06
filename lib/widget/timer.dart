@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
-import 'package:work_around/Models/history.dart';
-import 'package:work_around/Models/dependencies.dart';
+import 'package:work_around/models/history.dart';
+import 'package:work_around/models/dependencies.dart';
+import 'package:work_around/screen/running_module/running_result.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key key}) : super(key: key);
@@ -92,6 +93,7 @@ class TimerPageState extends State<TimerPage> {
                 Navigator.of(context).pop();
                 dependencies.stopwatch.stop();
                 save_record_to_history();
+                Navigator.push(context,MaterialPageRoute(builder: (context) => RunningResultScreen()));
               },
             ),
             new FlatButton(

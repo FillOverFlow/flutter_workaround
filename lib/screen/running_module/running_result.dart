@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:work_around/screen/running_history.dart';
-import 'google_map_screen.dart';
+import 'package:work_around/screen/home.dart';
+import 'package:work_around/widget/google_map_screen.dart';
 
 class RunningResultScreen extends StatefulWidget {
   @override
@@ -17,8 +17,8 @@ class _RunningResultState extends State<RunningResultScreen> {
     super.initState();
   }
 
-  void linkto_history(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => RunningHistory()));
+  void linkto_home(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
   
   @override
@@ -85,7 +85,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                       Container(
                         margin: EdgeInsets.only(top: 40),
                         child: RaisedButton(
-                          onPressed: linkto_history,
+                          onPressed: linkto_home,
                           padding: const EdgeInsets.all(0.0),
                           child: Container(
                             height: 45,

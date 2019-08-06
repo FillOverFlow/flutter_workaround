@@ -22,8 +22,8 @@ class _MyMapPageState extends State<MapScreen> {
         currentLocation = await location.getLocation();
         controller.animateCamera(CameraUpdate.newCameraPosition( 
           CameraPosition(target: LatLng( 
-            13.6900043,
-            100.7479237),
+            currentLocation.latitude,
+            currentLocation.longitude),
             zoom: 14)
         ));
       } on PlatformException catch (e) {
@@ -85,23 +85,25 @@ class _MyMapPageState extends State<MapScreen> {
                   // LatLng(13.7123167,100.728104),
                 ])},
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: Align(
-          //     alignment: Alignment.topRight,
-          //     child: FloatingActionButton( 
-          //       onPressed: () => print('button pressed'),
-          //       materialTapTargetSize: MaterialTapTargetSize.padded,
-          //       backgroundColor: Colors.blue,
-          //       child: Icon(Icons.map),
-          //     ),
-          //   )
-          // ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: FloatingActionButton(
+                heroTag: 'bangkok', 
+                onPressed: _zoomOutToBankok,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.location_city),
+              ),
+            )
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child:Align(
               alignment:Alignment.bottomRight,
               child: FloatingActionButton.extended(
+                heroTag: 'mylocation',
                 onPressed: getCurrentLocation,
                 label: Text('Mylocation'),
                 icon:Icon(Icons.near_me),

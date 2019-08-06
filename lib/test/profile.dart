@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
+
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -42,11 +42,11 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             RaisedButton(
               child:Text("บันทึก") ,
-              onPressed: save_to_firebase,
+              onPressed: null,
               ),
             RaisedButton(
               child: Text("show recode"),
-              onPressed: save_to_firebase,)
+              onPressed: null,)
           ],
         ),
       ),
@@ -55,23 +55,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   
 
-  Future<void> save_to_firebase()  {
-    final formState = _formKey.currentState;
-    if(formState.validate()){
-      formState.save();
-      try {
-      ref_firebase.child("profile").set({
-        "user":"finfin",
-        "width":_width,
-        "height":_height
-      });
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      print("add to database successful");
-      } catch (e) {
-        print(e.message);
-      }
-    }
-  }
+  // Future<void> save_to_firebase()  {
+  //   final formState = _formKey.currentState;
+  //   if(formState.validate()){
+  //     formState.save();
+  //     try {
+  //     ref_firebase.child("profile").set({
+  //       "user":"finfin",
+  //       "width":_width,
+  //       "height":_height
+  //     });
+  //     Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  //     print("add to database successful");
+  //     } catch (e) {
+  //       print(e.message);
+  //     }
+  //   }
+  // }
 
   // Future<void> add_to_cloudfirestore(){
   //   Firestore.instance.runTransaction((Transaction transaction )async{

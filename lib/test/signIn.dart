@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'register.dart';
-import 'home.dart';
+// import 'register.dart';
+// import 'home.dart';
 
 class SignInPage extends StatefulWidget{
   @override 
@@ -40,11 +40,11 @@ class _SignInPageState extends State<SignInPage> {
               decoration: InputDecoration(labelText: 'รหัสผ่าน'),
               ),
             RaisedButton(
-              onPressed: signIn,
+              //onPressed: signIn,
               child: Text('เข้าสู่ระบบ'),
             ),
             RaisedButton(
-              onPressed: link_to_register,
+              //onPressed: link_to_register,
               child: Text("สมัคร"),
             )
           ],
@@ -53,23 +53,23 @@ class _SignInPageState extends State<SignInPage> {
     );
   } 
 
-  void link_to_register(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
-  }
-  Future<void> signIn()async{
-    final formState = _formKey.currentState;
-    if(formState.validate()){
-      formState.save();
-      try {
-        FirebaseUser use = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email,password: _password);
-        Navigator.push(context,MaterialPageRoute(builder:(context) => HomeScreen()));
-      } catch (e) {
-        print(e.message);
-      }
-    }
-    //validate field
+  // void link_to_register(){
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+  // }
+  // Future<void> signIn()async{
+  //   final formState = _formKey.currentState;
+  //   if(formState.validate()){
+  //     formState.save();
+  //     try {
+  //       FirebaseUser use = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email,password: _password);
+  //       Navigator.push(context,MaterialPageRoute(builder:(context) => HomeScreen()));
+  //     } catch (e) {
+  //       print(e.message);
+  //     }
+  //   }
+  //   //validate field
 
-    //login to firebase 
+  //   //login to firebase 
 
-  }
+  // }
 }

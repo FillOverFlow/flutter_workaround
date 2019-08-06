@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'home.dart';
+import 'package:work_around/screen/home.dart';
 import 'register_design_screen.dart';
 
 
@@ -152,9 +152,8 @@ class _LoginPageState extends State<LoginScreen> {
                     ),
                     ForgetPassword(),
                     Spacer(),
-                    RaisedButton(
-                        onPressed: signin,
-                        padding: const EdgeInsets.all(0.0),
+                    GestureDetector(
+                        onTap: signin,
                         child: Container(
                           height: 45,
                           width: MediaQuery.of(context).size.width/1.2,
