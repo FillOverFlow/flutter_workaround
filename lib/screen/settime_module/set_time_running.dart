@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
-
 class SetTimeRunning extends StatefulWidget {
   @override
   _SetTimeRunningState createState() => _SetTimeRunningState();
@@ -63,6 +62,7 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
       platformChannelSpecifics
       );
       print('send.. $scheduledNotificationDateTime');
+      Navigator.of(context).pop();
   }
 
   Future<Null> _selectDate(BuildContext context) async {
