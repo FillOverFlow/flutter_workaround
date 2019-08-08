@@ -152,9 +152,8 @@ class _LoginPageState extends State<LoginScreen> {
                     ),
                     ForgetPassword(),
                     Spacer(),
-                    RaisedButton(
-                        onPressed: signin,
-                        padding: const EdgeInsets.all(0.0),
+                    GestureDetector(
+                        onTap: signin,
                         child: Container(
                           height: 45,
                           width: MediaQuery.of(context).size.width/1.2,

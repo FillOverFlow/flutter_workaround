@@ -6,7 +6,7 @@ import 'test/run_test.dart';
 
 
 
-void main() => runApp(MainApp());
+void main() => runApp(TestApp());
 
 class MainApp extends StatelessWidget{
   @override 

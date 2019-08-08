@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:work_around/screen/authentication_module/login_design_screen.dart';
 import 'package:work_around/screen/running_history_module/running_history.dart';
 import 'package:work_around/screen/running_module/running.dart';
 import 'package:work_around/screen/settime_module/list_time_running.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomeScreen> {
               trailing: new Icon(Icons.access_alarm),
               onTap:() { 
                 Navigator.of(context).pop();
-                Navigator.push(context,MaterialPageRoute(builder:(context) => ListNotificationScreen()));
+                Navigator.push(context,MaterialPageRoute(builder:(context) => ListNotificationScreen(null,null)));
                 }
             ),
             new ListTile(
@@ -62,8 +63,11 @@ class _HomePageState extends State<HomeScreen> {
             ),
             new ListTile(
               title: new Text("ปิด"),
-              trailing: new Icon(Icons.close),
-              onTap: () => Navigator.of(context).pop(),
+              trailing: new Icon(Icons.exit_to_app),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+              }
             )
           ],
         ),
