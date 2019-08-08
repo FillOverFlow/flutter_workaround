@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:work_around/screen/settime_module/schedu.dart';
 import 'list_time_running.dart';
 
@@ -51,9 +52,9 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
   }
 
   sendNotificationTime() async {
-    var timenow = DateTime.now();
+    var timealert = DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute);
     var scheduledNotificationDateTime =
-        timenow;
+        timealert;
     var androidPlatformChannelSpecifics =
         new AndroidNotificationDetails('your other channel id',
             'your other channel name', 'your other channel description');
@@ -69,7 +70,10 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
       platformChannelSpecifics
       );
       print('send.. $scheduledNotificationDateTime');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ListNotificationScreen(_date.toString())));
+
+      //reformat datetime 
+      String format_date = DateFormat('dd-MM-yyyy').format(_date);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ListNotificationScreen(format_date,_time.toString())));
       
   }
 
@@ -86,6 +90,7 @@ class _SetTimeRunningState extends State<SetTimeRunning> {
        print("Date selected ${_date.toString()}");
        setState(() {
          _date = picked;
+         //change format _date to dd-MM-yyyy
        });
      }
   }

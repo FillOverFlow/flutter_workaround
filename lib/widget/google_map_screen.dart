@@ -69,8 +69,8 @@ class _MyMapPageState extends State<MapScreen> {
             markers: {
               Marker( 
                 markerId: MarkerId("1"),
-                position: LatLng(13.6900043, 100.7479237),
-                infoWindow: InfoWindow(title:"สนามบินสุวรรณภมูิ",snippet: "สนามบินไทย")
+                position: LatLng(currentLocation.latitude, currentLocation.longitude),
+                infoWindow: InfoWindow(title:"Mylocation",snippet: "สนามบินไทย")
               )
             },
             polylines: {

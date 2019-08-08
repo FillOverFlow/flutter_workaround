@@ -7,14 +7,18 @@ import 'package:work_around/screen/settime_module/set_time_running.dart';
 
 class ListNotificationScreen extends StatefulWidget {
   @override
-   final String datetime_string;
-   ListNotificationScreen(this.datetime_string);
-  _ListNotificationScreenState createState() => _ListNotificationScreenState(this.datetime_string);
+   final String date_string;
+   final String time_string;
+   ListNotificationScreen(this.date_string,this.time_string);
+  _ListNotificationScreenState createState() => _ListNotificationScreenState(this.date_string,this.time_string);
 }
 
 class _ListNotificationScreenState extends State<ListNotificationScreen> {
-  final String datetime_string;
-  _ListNotificationScreenState(this.datetime_string);  
+  final String date_string;
+  final String time_string;
+
+
+  _ListNotificationScreenState(this.date_string, this.time_string);  
   /* variable */
   List<String> _scheduList = [];
   Future<List<PendingNotificationRequest>> notificationFuture;
@@ -30,11 +34,12 @@ class _ListNotificationScreenState extends State<ListNotificationScreen> {
   /* fucntion module */
   @override
   void initState() {
-
+    var datetime_schedu;
     message = "No message.";
-    print('you have datetime ${datetime_string}');
-    if(datetime_string != null){
-      _addScheduItems(datetime_string);
+    print('you have datetime ${date_string}');
+    if(date_string != null){
+      datetime_schedu = date_string +'  '+ time_string;
+      _addScheduItems(datetime_schedu);
     }
     var initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
