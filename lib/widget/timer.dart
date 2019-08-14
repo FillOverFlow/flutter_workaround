@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:work_around/models/history.dart';
 import 'package:work_around/models/dependencies.dart';
 import 'package:work_around/screen/running_module/running_result.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key key}) : super(key: key);
@@ -16,25 +18,47 @@ class TimerPageState extends State<TimerPage> {
   List<History> historys = List();
   History history;
   DatabaseReference historyRef;
+  var currentLocation;
   final database = FirebaseDatabase.instance.reference();
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    history = History("","","");
-    
+    history = History("", "", "");
+
     historyRef = database.reference().child('history');
     historyRef.onChildAdded.listen(_onEntryAdded);
     historyRef.onChildChanged.listen(_onEntryChanged);
-    
   }
-  //history var zone 
-   _onEntryAdded(Event event) {
+
+  //function get mylocation
+  void getCurrentLocation() async {
+    String error = "";
+    try {
+      await Geolocator().getCurrentPosition().then((currloc) {
+        setState(() {
+          currentLocation = currloc;
+        });
+      });
+      print(
+          "current location: ${currentLocation.latitude} ${currentLocation.longitude}");
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = 'Permission denied';
+      }
+      print('set currentLocation null');
+      currentLocation = null;
+    }
+  }
+
+  //history var zone
+  _onEntryAdded(Event event) {
     setState(() {
       historys.add(History.fromSnapshot(event.snapshot));
     });
   }
 
-   _onEntryChanged(Event event) {
+  _onEntryChanged(Event event) {
     var old = historys.singleWhere((entry) {
       return entry.key == event.snapshot.key;
     });
@@ -55,25 +79,25 @@ class TimerPageState extends State<TimerPage> {
     });
   }
 
-  void rightButtonPressed() {
+  void startButtonPressed() {
     setState(() {
       if (dependencies.stopwatch.isRunning) {
         dependencies.stopwatch.stop();
       } else {
         dependencies.stopwatch.start();
+        getCurrentLocation();
       }
     });
   }
 
-  void finishRunningButtonPressed(){
+  void finishRunningButtonPressed() {
     if (dependencies.stopwatch.isRunning) {
-        dependencies.stopwatch.stop();
-        //display alert
-        _showDialog(); 
-    
-      }else{
-        dependencies.stopwatch.reset();
-      } 
+      dependencies.stopwatch.stop();
+      //display alert
+      _showDialog();
+    } else {
+      dependencies.stopwatch.reset();
+    }
   }
 
   void _showDialog() {
@@ -93,7 +117,10 @@ class TimerPageState extends State<TimerPage> {
                 Navigator.of(context).pop();
                 dependencies.stopwatch.stop();
                 save_record_to_history();
-                Navigator.push(context,MaterialPageRoute(builder: (context) => RunningResultScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RunningResultScreen()));
               },
             ),
             new FlatButton(
@@ -108,7 +135,7 @@ class TimerPageState extends State<TimerPage> {
     );
   }
 
-  void save_record_to_history(){
+  void save_record_to_history() {
     //create datetime format
     var now = new DateTime.now();
     var dateNow = new DateFormat("dd-MM-yyyy").format(now);
@@ -117,27 +144,28 @@ class TimerPageState extends State<TimerPage> {
     history.record = '${dependencies.stopwatch.elapsedMilliseconds}';
     history.user = "finfin";
     history.datetime = '$dateNow';
-    
-    try{
-       historyRef.push().set(history.toJson());
+
+    try {
+      historyRef.push().set(history.toJson());
       // database.child("history").set({
       //   "user":"finfin",
       //   "record":'${dependencies.stopwatch.elapsedMilliseconds}',
       //   "datetime":'${date_now}'
       // });
       print("send record success");
-    }catch(e){
+    } catch (e) {
       print("can't send $e");
     }
   }
 
   Widget buildFloatingButton(String text, VoidCallback callback) {
-    TextStyle roundTextStyle = const TextStyle(fontSize: 16.0, color: Colors.white);
+    TextStyle roundTextStyle =
+        const TextStyle(fontSize: 16.0, color: Colors.white);
     return new FloatingActionButton(
-      backgroundColor: Colors.pink,
-      heroTag: text,
-      child: new Text(text, style: roundTextStyle),
-      onPressed: callback);
+        backgroundColor: Colors.pink,
+        heroTag: text,
+        child: new Text(text, style: roundTextStyle),
+        onPressed: callback);
   }
 
   @override
@@ -156,8 +184,12 @@ class TimerPageState extends State<TimerPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 // buildFloatingButton(dependencies.stopwatch.isRunning ? "lap" : "reset", leftButtonPressed),
-                buildFloatingButton(dependencies.stopwatch.isRunning ? "เสร็จ" : "คืนค่า", finishRunningButtonPressed),
-                buildFloatingButton(dependencies.stopwatch.isRunning ? "พัก" : "เริ่ม", rightButtonPressed),
+                buildFloatingButton(
+                    dependencies.stopwatch.isRunning ? "เสร็จ" : "คืนค่า",
+                    finishRunningButtonPressed),
+                buildFloatingButton(
+                    dependencies.stopwatch.isRunning ? "พัก" : "เริ่ม",
+                    startButtonPressed),
               ],
             ),
           ),
@@ -171,7 +203,8 @@ class TimerText extends StatefulWidget {
   TimerText({this.dependencies});
   final Dependencies dependencies;
 
-  TimerTextState createState() => new TimerTextState(dependencies: dependencies);
+  TimerTextState createState() =>
+      new TimerTextState(dependencies: dependencies);
 }
 
 class TimerTextState extends State<TimerText> {
@@ -182,7 +215,9 @@ class TimerTextState extends State<TimerText> {
 
   @override
   void initState() {
-    timer = new Timer.periodic(new Duration(milliseconds: dependencies.timerMillisecondsRefreshRate), callback);
+    timer = new Timer.periodic(
+        new Duration(milliseconds: dependencies.timerMillisecondsRefreshRate),
+        callback);
     super.initState();
   }
 
@@ -215,18 +250,18 @@ class TimerTextState extends State<TimerText> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-          new RepaintBoundary(
-            child: new SizedBox(
-              height: 90,
-              child: new MinutesAndSeconds(dependencies: dependencies),
-            ),
+        new RepaintBoundary(
+          child: new SizedBox(
+            height: 90,
+            child: new MinutesAndSeconds(dependencies: dependencies),
           ),
-          new RepaintBoundary(
-            child: new SizedBox(
-              height: 90,
-              child: new Hundreds(dependencies: dependencies),
-            ),
+        ),
+        new RepaintBoundary(
+          child: new SizedBox(
+            height: 90,
+            child: new Hundreds(dependencies: dependencies),
           ),
+        ),
       ],
     );
   }
@@ -236,7 +271,8 @@ class MinutesAndSeconds extends StatefulWidget {
   MinutesAndSeconds({this.dependencies});
   final Dependencies dependencies;
 
-  MinutesAndSecondsState createState() => new MinutesAndSecondsState(dependencies: dependencies);
+  MinutesAndSecondsState createState() =>
+      new MinutesAndSecondsState(dependencies: dependencies);
 }
 
 class MinutesAndSecondsState extends State<MinutesAndSeconds> {
@@ -302,5 +338,3 @@ class HundredsState extends State<Hundreds> {
     return new Text(hundredsStr, style: dependencies.textStyle);
   }
 }
-
-

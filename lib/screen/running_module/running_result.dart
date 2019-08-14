@@ -9,18 +9,16 @@ class RunningResultScreen extends StatefulWidget {
 }
 
 class _RunningResultState extends State<RunningResultScreen> {
-
-
-
-  void intiState(){
+  void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
 
-  void linkto_home(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  void linkto_home() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,29 +30,35 @@ class _RunningResultState extends State<RunningResultScreen> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                SizedBox( //Card for map 
+                SizedBox(
+                  //Card for map
                   width: 400,
                   height: 300,
-                  child: MapScreen(),
+                  child: MapScreen(null, null),
                 ),
                 Center(
                   child: Column(
                     children: <Widget>[
-                      Text('สรุปผลการวิ่ง',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
+                      Text(
+                        'สรุปผลการวิ่ง',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
                         ),
                       ),
                       Stack(
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topLeft,
-                            child:Text('วิ่งระยะทางทั้งหมด:',),
+                            child: Text(
+                              'วิ่งระยะทางทั้งหมด:',
+                            ),
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child:Text('10 km.',),
+                            child: Text(
+                              '10 km.',
+                            ),
                           )
                         ],
                       ),
@@ -62,11 +66,15 @@ class _RunningResultState extends State<RunningResultScreen> {
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topLeft,
-                            child:Text('ใช้เวลาทั้งหมด',),
+                            child: Text(
+                              'ใช้เวลาทั้งหมด',
+                            ),
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child:Text('1 hr.',),
+                            child: Text(
+                              '1 hr.',
+                            ),
                           )
                         ],
                       ),
@@ -74,11 +82,15 @@ class _RunningResultState extends State<RunningResultScreen> {
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topLeft,
-                            child:Text('เผาผลาญ แคลโลลี่โดยประมาณ',),
+                            child: Text(
+                              'เผาผลาญ แคลโลลี่โดยประมาณ',
+                            ),
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child:Text('350 kcal.',),
+                            child: Text(
+                              '350 kcal.',
+                            ),
                           )
                         ],
                       ),
@@ -89,24 +101,22 @@ class _RunningResultState extends State<RunningResultScreen> {
                           padding: const EdgeInsets.all(0.0),
                           child: Container(
                             height: 45,
-                            width: MediaQuery.of(context).size.width/1.2,
+                            width: MediaQuery.of(context).size.width / 1.2,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFFf45d27),
-                                  Color(0xFFf5851f)
-                                ],
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(50)
-                              )
-                            ),
-                            child: Center(
-                              child:   Text('Save History'.toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFFf45d27),
+                                    Color(0xFFf5851f)
+                                  ],
                                 ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50))),
+                            child: Center(
+                              child: Text(
+                                'Save History'.toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -120,7 +130,6 @@ class _RunningResultState extends State<RunningResultScreen> {
           ],
         ),
       ),
-      
     );
   }
 }

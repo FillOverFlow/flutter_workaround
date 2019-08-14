@@ -1,27 +1,58 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+import 'package:dio/dio.dart';
 
 class MapScreen extends StatefulWidget {
   @override
-  _MyMapPageState createState() => _MyMapPageState();
+  final List _start_location;
+  final List _end_location;
+  MapScreen(this._start_location, this._end_location);
+  _MyMapPageState createState() =>
+      _MyMapPageState(this._start_location, this._end_location);
 }
 
 class _MyMapPageState extends State<MapScreen> {
-  Completer<GoogleMapController> _controller = Completer(); //class for map
-  LocationData currentLocation;
+  /* var from timmer page */
+  final List _start_location;
+  final List _end_location;
+  _MyMapPageState(this._start_location, this._end_location);
+
+  GoogleMapController mapController;
+  var currentLocation;
+  List start_location = [];
+  List end_location = [];
+  bool mapToggle = false;
+  bool check_start = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Geolocator().getCurrentPosition().then((currloc) {
+      setState(() {
+        currentLocation = currloc;
+        mapToggle = true;
+        start_location.add(currentLocation);
+        check_start = true;
+      });
+    });
+  }
 
   void getCurrentLocation() async {
-    final GoogleMapController controller = await _controller.future;
-    Location location = Location();
     String error = "";
     try {
-      currentLocation = await location.getLocation();
-      controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      Geolocator().getCurrentPosition().then((currloc) {
+        setState(() {
+          currentLocation = currloc;
+        });
+      });
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: 14)));
+          zoom: 20)));
+      print(
+          "current location: ${currentLocation.latitude} ${currentLocation.longitude}");
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         error = 'Permission denied';
@@ -31,11 +62,18 @@ class _MyMapPageState extends State<MapScreen> {
     }
   }
 
-  Future _zoomOutToBankok() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(13.6900043, 100.7479237), 12));
+  Future _testCalDistance() async {
+    Dio dio = new Dio();
+    Response response = await dio.get(
+        "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C,-73.9976592&key=AIzaSyBA54tae36qRifa7wiE-iJ1HrUDuZPZfk0");
+    print(response.data);
   }
+
+  // Future _zoomOutToBankok() async {
+  //   final GoogleMapController controller = await mapController.future;
+  //   controller.animateCamera(
+  //       CameraUpdate.newLatLngZoom(LatLng(13.6900043, 100.7479237), 12));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,35 +89,41 @@ class _MyMapPageState extends State<MapScreen> {
         // ),
         body: Stack(
       children: <Widget>[
-        GoogleMap(
-          myLocationButtonEnabled: true,
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(13.7650836, 100.5379664),
-            zoom: 18,
-          ),
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          markers: {
-            Marker(
-                markerId: MarkerId("1"),
-                position: LatLng(13.7650836, 100.5379664),
-                infoWindow:
-                    InfoWindow(title: "Mylocation", snippet: "สนามบินไทย"))
-          },
-          polylines: {
-            Polyline(
-                polylineId: PolylineId("p1"),
-                color: Colors.red[300],
-                points: [
-                  LatLng(13.7123167, 100.728104),
-                  LatLng(13.655067, 100.722697),
-                  // LatLng(13.648389, 100.753335),
-                  // LatLng(13.705761, 100.779158),
-                  // LatLng(13.7123167,100.728104),
-                ])
-          },
+        Container(
+          child: mapToggle
+              ? GoogleMap(
+                  myLocationButtonEnabled: true,
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                        currentLocation.latitude, currentLocation.longitude),
+                    zoom: 20,
+                  ),
+                  onMapCreated: onMapCreated,
+                  markers: {
+                    Marker(
+                        markerId: MarkerId("1"),
+                        position: LatLng(currentLocation.latitude,
+                            currentLocation.longitude),
+                        infoWindow: InfoWindow(
+                            title: "Mylocation", snippet: "mylocation"))
+                  },
+                  polylines: {
+                    Polyline(
+                        polylineId: PolylineId("p1"),
+                        color: Colors.red[300],
+                        points: [
+                          LatLng(13.7123167, 100.728104),
+                          LatLng(13.655067, 100.722697),
+                          // LatLng(13.648389, 100.753335),
+                          // LatLng(13.705761, 100.779158),
+                          // LatLng(13.7123167,100.728104),
+                        ])
+                  },
+                )
+              : Center(
+                  child: Text("loading plasewait..."),
+                ),
         ),
         Padding(
             padding: const EdgeInsets.all(16.0),
@@ -87,7 +131,7 @@ class _MyMapPageState extends State<MapScreen> {
               alignment: Alignment.topRight,
               child: FloatingActionButton(
                 heroTag: 'bangkok',
-                onPressed: _zoomOutToBankok,
+                onPressed: null,
                 materialTapTargetSize: MaterialTapTargetSize.padded,
                 backgroundColor: Colors.blue,
                 child: Icon(Icons.location_city),
@@ -106,5 +150,11 @@ class _MyMapPageState extends State<MapScreen> {
         )
       ],
     ));
+  }
+
+  void onMapCreated(controller) {
+    setState(() {
+      mapController = controller;
+    });
   }
 }

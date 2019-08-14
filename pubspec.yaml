@@ -31,7 +31,9 @@ dependencies:
   intl: any
   google_maps_flutter: ^0.5.19+2
   location: ^2.3.5
+  geolocator: ^5.1.2
   datetime_picker_formfield: ^0.1.1
+  dio: ^2.1.13
   # map_view: ^0.0.14
   #scheduled_notifications: ^1.0.
   flutter_local_notifications: any

@@ -4,13 +4,11 @@ import 'screen/splash_screen.dart';
 import 'package:work_around/screen/authentication_module/login_design_screen.dart';
 import 'test/run_test.dart';
 
-
-
 void main() => runApp(TestApp());
 
-class MainApp extends StatelessWidget{
-  @override 
-  Widget build(BuildContext context){
+class MainApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WorkAroud application',
       debugShowCheckedModeBanner: false,
@@ -18,14 +16,10 @@ class MainApp extends StatelessWidget{
         primarySwatch: Colors.purple,
       ),
       home: SplashScreen(),
-      routes: <String,WidgetBuilder>{
+      routes: <String, WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
-        "/Map":(BuildContext context) => MapScreen()
-        },
-      );
+        "/Map": (BuildContext context) => MapScreen(null, null)
+      },
+    );
   }
 }
-
-
-   
-
