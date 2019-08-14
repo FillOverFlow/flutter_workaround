@@ -23,7 +23,7 @@ class RunningPage extends StatelessWidget {
                     //Card for map
                     width: 400,
                     height: 300,
-                    child: MapScreen(null, null),
+                    child: MapScreen(),
                   ),
                   SizedBox(
                     //Card for timmer

@@ -7,19 +7,10 @@ import 'package:dio/dio.dart';
 
 class MapScreen extends StatefulWidget {
   @override
-  final List _start_location;
-  final List _end_location;
-  MapScreen(this._start_location, this._end_location);
-  _MyMapPageState createState() =>
-      _MyMapPageState(this._start_location, this._end_location);
+  _MyMapPageState createState() => _MyMapPageState();
 }
 
 class _MyMapPageState extends State<MapScreen> {
-  /* var from timmer page */
-  final List _start_location;
-  final List _end_location;
-  _MyMapPageState(this._start_location, this._end_location);
-
   GoogleMapController mapController;
   var currentLocation;
   List start_location = [];

@@ -16,7 +16,7 @@ class TestApp extends StatelessWidget {
       home: HomeScreen(),
       routes: <String, WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
-        "/Map": (BuildContext context) => MapScreen(null, null)
+        "/Map": (BuildContext context) => MapScreen()
       },
     );
   }

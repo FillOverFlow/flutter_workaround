@@ -34,7 +34,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                   //Card for map
                   width: 400,
                   height: 300,
-                  child: MapScreen(null, null),
+                  child: MapScreen(),
                 ),
                 Center(
                   child: Column(
