@@ -15,24 +15,27 @@ class TimerPage extends StatefulWidget {
 }
 
 class TimerPageState extends State<TimerPage> {
+  var _start_location;
+  var _end_location;
+  var currentLocation;
+
   List<History> historys = List();
   History history;
   DatabaseReference historyRef;
-  var currentLocation;
+
   final database = FirebaseDatabase.instance.reference();
 
   @override
   void initState() {
     super.initState();
     history = History("", "", "");
-
     historyRef = database.reference().child('history');
     historyRef.onChildAdded.listen(_onEntryAdded);
     historyRef.onChildChanged.listen(_onEntryChanged);
   }
 
   //function get mylocation
-  void getCurrentLocation() async {
+  getCurrentLocation() async {
     String error = "";
     try {
       await Geolocator().getCurrentPosition().then((currloc) {
@@ -49,6 +52,7 @@ class TimerPageState extends State<TimerPage> {
       print('set currentLocation null');
       currentLocation = null;
     }
+    return currentLocation;
   }
 
   //history var zone
@@ -80,24 +84,33 @@ class TimerPageState extends State<TimerPage> {
   }
 
   void startButtonPressed() {
-    setState(() {
-      if (dependencies.stopwatch.isRunning) {
-        dependencies.stopwatch.stop();
-      } else {
-        dependencies.stopwatch.start();
-        getCurrentLocation();
-      }
+    Geolocator().getCurrentPosition().then((currloc) {
+      setState(() {
+        if (dependencies.stopwatch.isRunning) {
+          dependencies.stopwatch.stop();
+        } else {
+          dependencies.stopwatch.start();
+          _start_location = currloc;
+          print("start location ${_start_location.latitude}");
+        }
+      });
     });
   }
 
   void finishRunningButtonPressed() {
-    if (dependencies.stopwatch.isRunning) {
-      dependencies.stopwatch.stop();
-      //display alert
-      _showDialog();
-    } else {
-      dependencies.stopwatch.reset();
-    }
+    Geolocator().getCurrentPosition().then((currloc) {
+      setState(() {
+        if (dependencies.stopwatch.isRunning) {
+          dependencies.stopwatch.stop();
+          //display alert
+          _showDialog();
+          _end_location = currloc;
+          print('end location ${_end_location.latitude}');
+        } else {
+          dependencies.stopwatch.reset();
+        }
+      });
+    });
   }
 
   void _showDialog() {
@@ -114,13 +127,15 @@ class TimerPageState extends State<TimerPage> {
             new FlatButton(
               child: new Text("วิ่งเสร็จแล้ว"),
               onPressed: () {
+                print('end location ${_end_location.latitude}');
                 Navigator.of(context).pop();
                 dependencies.stopwatch.stop();
                 save_record_to_history();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RunningResultScreen()));
+                        builder: (context) => RunningResultScreen(
+                            _start_location, _end_location)));
               },
             ),
             new FlatButton(

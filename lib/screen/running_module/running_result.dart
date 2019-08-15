@@ -2,21 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:work_around/screen/home.dart';
 import 'package:work_around/widget/google_map_screen.dart';
+import 'package:work_around/widget/map_result.dart';
 
 class RunningResultScreen extends StatefulWidget {
   @override
-  _RunningResultState createState() => _RunningResultState();
+  var _start_location;
+  var _end_location;
+  RunningResultScreen(this._start_location, this._end_location);
+  _RunningResultState createState() =>
+      _RunningResultState(this._start_location, this._end_location);
 }
 
 class _RunningResultState extends State<RunningResultScreen> {
+  var _start_location;
+  var _end_location;
+
+  _RunningResultState(this._start_location, this._end_location);
   void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
 
   void linkto_home() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    print('[success] start location ${_end_location.longitude}');
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   @override
@@ -34,7 +44,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                   //Card for map
                   width: 400,
                   height: 300,
-                  child: MapScreen(),
+                  child: MapScreenResult(_start_location, _end_location),
                 ),
                 Center(
                   child: Column(
