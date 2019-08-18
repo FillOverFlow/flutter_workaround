@@ -18,7 +18,9 @@ class TimerPageState extends State<TimerPage> {
   var _start_location;
   var _end_location;
   var currentLocation;
+  var _milliseconds;
 
+  String history_string = "";
   List<History> historys = List();
   History history;
   DatabaseReference historyRef;
@@ -91,7 +93,6 @@ class TimerPageState extends State<TimerPage> {
         } else {
           dependencies.stopwatch.start();
           _start_location = currloc;
-          print("start location ${_start_location.latitude}");
         }
       });
     });
@@ -105,7 +106,6 @@ class TimerPageState extends State<TimerPage> {
           //display alert
           _showDialog();
           _end_location = currloc;
-          print('end location ${_end_location.latitude}');
         } else {
           dependencies.stopwatch.reset();
         }
@@ -127,7 +127,6 @@ class TimerPageState extends State<TimerPage> {
             new FlatButton(
               child: new Text("วิ่งเสร็จแล้ว"),
               onPressed: () {
-                print('end location ${_end_location.latitude}');
                 Navigator.of(context).pop();
                 dependencies.stopwatch.stop();
                 save_record_to_history();
@@ -135,7 +134,7 @@ class TimerPageState extends State<TimerPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => RunningResultScreen(
-                            _start_location, _end_location)));
+                            _start_location, _end_location, history_string)));
               },
             ),
             new FlatButton(
@@ -159,6 +158,14 @@ class TimerPageState extends State<TimerPage> {
     history.record = '${dependencies.stopwatch.elapsedMilliseconds}';
     history.user = "finfin";
     history.datetime = '$dateNow';
+
+    _milliseconds = dependencies.stopwatch.elapsedMilliseconds;
+    final int hundreds = (_milliseconds / 10).truncate();
+    final int seconds = (hundreds / 100).truncate();
+    final int minutes = (seconds / 60).truncate();
+    setState(() {
+      history_string = "${minutes} m ${seconds} s";
+    });
 
     try {
       historyRef.push().set(history.toJson());

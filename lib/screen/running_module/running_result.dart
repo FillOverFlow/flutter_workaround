@@ -1,23 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:work_around/models/history.dart';
 import 'package:work_around/screen/home.dart';
-import 'package:work_around/widget/google_map_screen.dart';
 import 'package:work_around/widget/map_result.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 class RunningResultScreen extends StatefulWidget {
   @override
   var _start_location;
   var _end_location;
-  RunningResultScreen(this._start_location, this._end_location);
-  _RunningResultState createState() =>
-      _RunningResultState(this._start_location, this._end_location);
+  String history;
+  RunningResultScreen(this._start_location, this._end_location, this.history);
+  _RunningResultState createState() => _RunningResultState(
+      this._start_location, this._end_location, this.history);
 }
 
 class _RunningResultState extends State<RunningResultScreen> {
   var _start_location;
   var _end_location;
+  String history;
 
-  _RunningResultState(this._start_location, this._end_location);
+  _RunningResultState(this._start_location, this._end_location, this.history);
+
+  double cal_distance_marker(lat1, lng1, lat2, lng2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lng2 - lng1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  @override
   void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
@@ -31,6 +45,11 @@ class _RunningResultState extends State<RunningResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double distance_marker = cal_distance_marker(
+        _start_location.latitude,
+        _start_location.longitude,
+        _end_location.latitude,
+        _end_location.longitude);
     return Scaffold(
       appBar: AppBar(title: Text('running result')),
       body: Container(
@@ -67,7 +86,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '10 km.',
+                              '${distance_marker} km.',
                             ),
                           )
                         ],
@@ -83,7 +102,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '1 hr.',
+                              '${history}',
                             ),
                           )
                         ],
@@ -106,9 +125,8 @@ class _RunningResultState extends State<RunningResultScreen> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 40),
-                        child: RaisedButton(
-                          onPressed: linkto_home,
-                          padding: const EdgeInsets.all(0.0),
+                        child: GestureDetector(
+                          onTap: linkto_home,
                           child: Container(
                             height: 45,
                             width: MediaQuery.of(context).size.width / 1.2,

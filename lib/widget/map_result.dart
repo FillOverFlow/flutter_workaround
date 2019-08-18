@@ -1,7 +1,8 @@
-import 'dart:async';
+// import 'dart:async';
 import 'package:flutter/material.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 
 class MapScreenResult extends StatefulWidget {
   var _start_location;
@@ -21,33 +22,10 @@ class _MyMapResultState extends State<MapScreenResult> {
   GoogleMapController mapController;
   var currentLocation;
   bool mapToggle = true;
-  bool check_start = false;
-
-  Future _testCalDistance() async {
-    Dio dio = new Dio();
-    Response response = await dio.get(
-        "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C,-73.9976592&key=AIzaSyBA54tae36qRifa7wiE-iJ1HrUDuZPZfk0");
-    print(response.data);
-  }
-
-  // Future _zoomOutToBankok() async {
-  //   final GoogleMapController controller = await mapController.future;
-  //   controller.animateCamera(
-  //       CameraUpdate.newLatLngZoom(LatLng(13.6900043, 100.7479237), 12));
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text('My Map'),
-        //   actions: <Widget>[
-        //     IconButton(
-        //       icon: Icon(Icons.home),
-        //       onPressed: _zoomOutToBankok,
-        //     )
-        //   ],
-        // ),
         body: Stack(
       children: <Widget>[
         Container(

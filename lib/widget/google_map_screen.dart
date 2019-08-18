@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 
 class MapScreen extends StatefulWidget {
@@ -54,19 +56,25 @@ class _MyMapPageState extends State<MapScreen> {
     }
   }
 
-  Future _testCalDistance() async {
-    Dio dio = new Dio();
-    Response response = await dio.get(
-        "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C,-73.9976592&key=AIzaSyBA54tae36qRifa7wiE-iJ1HrUDuZPZfk0");
-    print(response.data);
-  }
-
-  // Future _zoomOutToBankok() async {
-  //   final GoogleMapController controller = await mapController.future;
-  //   controller.animateCamera(
-  //       CameraUpdate.newLatLngZoom(LatLng(13.6900043, 100.7479237), 12));
+  // Future _testCalDistance() async {
+  //   Dio dio = new Dio();
+  //   Response response = await dio.get(
+  //       "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C,-73.9976592&key=AIzaSyBA54tae36qRifa7wiE-iJ1HrUDuZPZfk0");
+  //   print(response.data);
   // }
 
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
+
+  // final Uint8List markerIcon =
+  //       await getBytesFromAsset('assets/images/icon_marker_black.png', 100);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,6 +102,7 @@ class _MyMapPageState extends State<MapScreen> {
                   onMapCreated: onMapCreated,
                   markers: {
                     Marker(
+                        //icon: BitmapDescriptor.fromBytes(markerIcon),
                         markerId: MarkerId("1"),
                         position: LatLng(currentLocation.latitude,
                             currentLocation.longitude),
