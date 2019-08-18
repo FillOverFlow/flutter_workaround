@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:work_around/models/history.dart';
 import 'package:work_around/screen/home.dart';
 import 'package:work_around/widget/map_result.dart';
 import 'dart:math' show cos, sqrt, asin;
@@ -31,6 +30,11 @@ class _RunningResultState extends State<RunningResultScreen> {
     return 12742 * asin(sqrt(a));
   }
 
+  double cal_kcal(weight, distance) {
+    double kcal;
+    return weight * distance * 1.036;
+  }
+
   @override
   void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -39,8 +43,8 @@ class _RunningResultState extends State<RunningResultScreen> {
 
   void linkto_home() {
     print('[success] start location ${_end_location.longitude}');
-    // Navigator.push(
-    //     context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   @override
@@ -50,6 +54,7 @@ class _RunningResultState extends State<RunningResultScreen> {
         _start_location.longitude,
         _end_location.latitude,
         _end_location.longitude);
+    double kcal_from_running = cal_kcal(60, distance_marker);
     return Scaffold(
       appBar: AppBar(title: Text('running result')),
       body: Container(
@@ -118,7 +123,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '350 kcal.',
+                              '${kcal_from_running} kcal.',
                             ),
                           )
                         ],
