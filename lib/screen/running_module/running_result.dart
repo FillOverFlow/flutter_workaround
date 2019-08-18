@@ -31,8 +31,8 @@ class _RunningResultState extends State<RunningResultScreen> {
   }
 
   double cal_kcal(weight, distance) {
-    double kcal;
-    return weight * distance * 1.036;
+    double kcal = weight * distance * 1.036;
+    return kcal;
   }
 
   @override
@@ -54,7 +54,7 @@ class _RunningResultState extends State<RunningResultScreen> {
         _start_location.longitude,
         _end_location.latitude,
         _end_location.longitude);
-    double kcal_from_running = cal_kcal(60, distance_marker);
+    double kcal_from_running = cal_kcal(60, 2);
     return Scaffold(
       appBar: AppBar(title: Text('running result')),
       body: Container(
