@@ -4,7 +4,7 @@ import 'screen/splash_screen.dart';
 import 'package:work_around/screen/authentication_module/login_design_screen.dart';
 import 'test/run_test.dart';
 
-void main() => runApp(TestApp());
+void main() => runApp(MainApp());
 
 class MainApp extends StatelessWidget {
   @override

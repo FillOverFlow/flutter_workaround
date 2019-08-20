@@ -54,7 +54,7 @@ class _RunningResultState extends State<RunningResultScreen> {
         _start_location.longitude,
         _end_location.latitude,
         _end_location.longitude);
-    double kcal_from_running = cal_kcal(60, 2);
+    double kcal_from_running = cal_kcal(60, distance_marker);
     return Scaffold(
       appBar: AppBar(title: Text('running result')),
       body: Container(
