@@ -1,8 +1,9 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:work_around/screen/home.dart';
 import 'login_design_screen.dart';
+import 'package:work_around/models/profile.dart';
 
 void main() => runApp(RegisterScreen());
 
@@ -11,13 +12,15 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Register Screen',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      theme: ThemeData(primarySwatch: Colors.deepOrange),
       home: RegisterPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class RegisterPage extends StatefulWidget {
+  RegisterPage({Key key}) : super(key: key);
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -25,83 +28,76 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   String _email, _password;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<Profile> profiles = List();
+  Profile profile;
+  DatabaseReference profileRef;
+  var width;
+  var height;
+
+  final database = FirebaseDatabase.instance.reference();
   void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
+    profileRef = database.reference().child('profile');
+    profileRef.onChildAdded.listen(_onEntryAdded);
+    profileRef.onChildChanged.listen(_onEntryChanged);
+  }
+
+  //history var zone
+  _onEntryAdded(Event event) {
+    setState(() {
+      profiles.add(Profile.fromSnapshot(event.snapshot));
+    });
+  }
+
+  _onEntryChanged(Event event) {
+    var old = profiles.singleWhere((entry) {
+      return entry.key == event.snapshot.key;
+    });
+    setState(() {
+      profiles[profiles.indexOf(old)] = Profile.fromSnapshot(event.snapshot);
+    });
+  }
+
+  void save_profile_to_firebase() {
+    print('in save profile to firebase');
+    try {
+      FirebaseDatabase.instance
+          .reference()
+          .child('profile')
+          .child('finfin')
+          .set({
+        'name': 'finfin',
+        'width': width,
+        'height': height,
+      });
+      print("send record success");
+    } catch (e) {
+      print("can't send $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: Text("Resgister"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              })),
       body: Container(
         child: ListView(
           children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2.5,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Color(0xFFf45d27), Color(0xFFf5851f)]),
-                  borderRadius:
-                      BorderRadius.only(bottomLeft: Radius.circular(90))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                        },
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.person,
-                      size: 90,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 32,
-                        right: 32,
-                      ),
-                      child: Text(
-                        'ลงทะเบียน',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-
             /* Bottom Zone  */
             Form(
               key: _formKey,
               child: Container(
                 height: MediaQuery.of(context).size.height / 2,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 62),
+                padding: EdgeInsets.only(top: 42),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -132,14 +128,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             Icons.email,
                             color: Colors.grey,
                           ),
-                          hintText: 'Email',
+                          hintText: 'อีเมล',
                         ),
                       ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 1.2,
                       height: 45,
-                      margin: EdgeInsets.only(top: 32),
+                      margin: EdgeInsets.only(top: 22),
                       padding: EdgeInsets.only(
                           top: 4, left: 16, right: 16, bottom: 4),
                       decoration: BoxDecoration(
@@ -161,12 +157,58 @@ class _RegisterPageState extends State<RegisterPage> {
                             Icons.vpn_key,
                             color: Colors.grey,
                           ),
-                          hintText: 'Password',
+                          hintText: 'รหัสผ่าน',
                         ),
                       ),
                     ),
-                    ForgetPassword(),
-                    Spacer(),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      height: 45,
+                      margin: EdgeInsets.only(top: 24),
+                      padding: EdgeInsets.only(
+                          top: 4, left: 16, right: 16, bottom: 4),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(color: Colors.black12, blurRadius: 5)
+                          ]),
+                      child: TextFormField(
+                        onSaved: (input) => width = input,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.supervised_user_circle,
+                            color: Colors.grey,
+                          ),
+                          hintText: 'น้ำหนัก',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      height: 45,
+                      margin: EdgeInsets.only(top: 14, bottom: 14),
+                      padding: EdgeInsets.only(
+                          top: 4, left: 16, right: 16, bottom: 4),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(color: Colors.black12, blurRadius: 5)
+                          ]),
+                      child: TextFormField(
+                        onSaved: (input) => height = input,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.supervised_user_circle,
+                            color: Colors.grey,
+                          ),
+                          hintText: 'ส่วนสูง',
+                        ),
+                      ),
+                    ),
                     GestureDetector(
                       onTap: register,
                       child: Container(
@@ -191,7 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -206,6 +248,7 @@ class _RegisterPageState extends State<RegisterPage> {
         print("try connecting firebase...");
         FirebaseUser use = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
+        save_profile_to_firebase();
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));
       } catch (e) {

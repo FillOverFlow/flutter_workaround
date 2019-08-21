@@ -56,7 +56,7 @@ class _RunningResultState extends State<RunningResultScreen> {
         _end_location.longitude);
     double kcal_from_running = cal_kcal(60, distance_marker);
     return Scaffold(
-      appBar: AppBar(title: Text('running result')),
+      appBar: AppBar(title: Text('ผลลัพธ์ การวิ่ง')),
       body: Container(
         margin: EdgeInsets.all(10.0),
         padding: EdgeInsets.all(10.0),
@@ -146,7 +146,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                                     BorderRadius.all(Radius.circular(50))),
                             child: Center(
                               child: Text(
-                                'Save History'.toUpperCase(),
+                                'บันทึกประวัติ'.toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),

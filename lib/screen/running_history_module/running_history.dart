@@ -20,12 +20,19 @@ class _RunningHistoryState extends State<RunningHistory> {
       historys.add(History.fromSnapshot(event.snapshot));
     });
   }
- _onEntryChanged(Event event) {
+
+  _onEntryChanged(Event event) {
     var old = historys.singleWhere((entry) {
       return entry.key == event.snapshot.key;
     });
     setState(() {
       historys[historys.indexOf(old)] = History.fromSnapshot(event.snapshot);
+    });
+  }
+
+  void remove_history(int index) {
+    setState(() {
+      historys.removeAt(index);
     });
   }
 
@@ -38,14 +45,35 @@ class _RunningHistoryState extends State<RunningHistory> {
     database.reference().child('history').once().then((DataSnapshot snapshot) {
       print('Connected to second database and read ${snapshot.value}');
     });
-    
-    
   }
 
-  DatabaseReference getHistory(){
+  Widget _removeWidget(int index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('ต้องการที่จะลบ ประวัตินี้หรือไม่ ?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ยกเลิก'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text('ลบ'),
+                onPressed: () {
+                  remove_history(index);
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  DatabaseReference getHistory() {
     return historyRef;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,23 +82,21 @@ class _RunningHistoryState extends State<RunningHistory> {
       ),
       body: Column(
         children: <Widget>[
-          Flexible(child: FirebaseAnimatedList(
-            query: historyRef,
-            itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index){
-              return new ListTile(
+          Flexible(
+            child: FirebaseAnimatedList(
+              query: historyRef,
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                return new ListTile(
                   leading: Icon(Icons.history),
                   title: Text(historys[index].datetime),
                   subtitle: Text(historys[index].record),
                 );
-            },
-          ),)
+              },
+            ),
+          )
         ],
       ),
     );
   }
-
-  // void show_data(){
-  //   history
-  // }
 }

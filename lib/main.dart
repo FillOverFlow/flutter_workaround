@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
       title: 'WorkAroud application',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepOrange,
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{

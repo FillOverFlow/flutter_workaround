@@ -107,7 +107,7 @@ class _MyMapPageState extends State<MapScreen> {
                         position: LatLng(currentLocation.latitude,
                             currentLocation.longitude),
                         infoWindow: InfoWindow(
-                            title: "Mylocation", snippet: "mylocation"))
+                            title: "จุดที่ฉันอยู่", snippet: "จุดที่ฉันอยู่"))
                   },
                   polylines: {
                     Polyline(
@@ -145,7 +145,7 @@ class _MyMapPageState extends State<MapScreen> {
               child: FloatingActionButton.extended(
                 heroTag: 'mylocation',
                 onPressed: getCurrentLocation,
-                label: Text('Mylocation'),
+                label: Text('จุดที่ฉันอยู่'),
                 icon: Icon(Icons.near_me),
               )),
         )

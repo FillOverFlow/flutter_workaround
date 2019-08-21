@@ -154,11 +154,6 @@ class TimerPageState extends State<TimerPage> {
     var now = new DateTime.now();
     var dateNow = new DateFormat("dd-MM-yyyy").format(now);
 
-    //set value to firebase
-    history.record = '${dependencies.stopwatch.elapsedMilliseconds}';
-    history.user = "finfin";
-    history.datetime = '$dateNow';
-
     _milliseconds = dependencies.stopwatch.elapsedMilliseconds;
     final int hundreds = (_milliseconds / 10).truncate();
     final int seconds = (hundreds / 100).truncate();
@@ -166,6 +161,11 @@ class TimerPageState extends State<TimerPage> {
     setState(() {
       history_string = "${minutes} m ${seconds} s";
     });
+
+    //set value to firebase
+    history.record = "${minutes} m ${seconds} s";
+    history.user = "finfin";
+    history.datetime = '$now';
 
     try {
       historyRef.push().set(history.toJson());

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:work_around/screen/home.dart';
 import 'register_design_screen.dart';
 
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -13,9 +12,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginPageState extends State<LoginScreen> {
   String _email, _password;
 
-  GlobalKey <FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void intiState(){
+  void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
@@ -24,177 +23,161 @@ class _LoginPageState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child:ListView(
+        child: ListView(
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height/2.5,
+              height: MediaQuery.of(context).size.height / 2.5,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFf45d27),
-                  Color(0xFFf5851f)
-                ]),
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(90)
-                )
-              ),
-              child: Column( 
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFFf45d27), Color(0xFFf5851f)]),
+                  borderRadius:
+                      BorderRadius.only(bottomLeft: Radius.circular(90))),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Spacer(),
-                  Align( 
+                  Align(
                     alignment: Alignment.center,
-                    child: Icon(Icons.person,
-                    size:90,
-                    color: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 90,
+                      color: Colors.white,
                     ),
                   ),
                   Spacer(),
                   Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding( 
-                    padding: const EdgeInsets.only( 
-                      bottom: 32,
-                      right: 32,
-                    ),
-                    child: Text('Login',
-                      style: TextStyle( 
-                        color:Colors.white,
-                        fontSize: 20
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 32,
+                        right: 32,
+                      ),
+                      child: Text(
+                        'เข้าสู่ระบบ',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
-                  ),
                   )
                 ],
               ),
             ),
 
-
             /* Bottom Zone  */
             Form(
-              key:_formKey,
+              key: _formKey,
               child: Container(
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height / 2,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top:62),
-                child: Column( 
-                  children: <Widget>[ 
+                padding: EdgeInsets.only(top: 62),
+                child: Column(
+                  children: <Widget>[
                     Container(
-                      width: MediaQuery.of(context).size.width/1.2,
+                      width: MediaQuery.of(context).size.width / 1.2,
                       height: 45,
-                      padding: EdgeInsets.only( 
-                        top:4,left:16,right:16,bottom:4
-                      ),
-                      decoration: BoxDecoration(  
-                        borderRadius: BorderRadius.all( 
-                          Radius.circular(50)
-                        ),
-                        color:Colors.white,
+                      padding: EdgeInsets.only(
+                          top: 4, left: 16, right: 16, bottom: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                        color: Colors.white,
                         boxShadow: [
-                          BoxShadow( 
-                            color:Colors.black12,
+                          BoxShadow(
+                            color: Colors.black12,
                             blurRadius: 5,
                           ),
                         ],
                       ),
                       child: TextFormField(
-                        validator:(input){
-                          if(input.isEmpty){
+                        validator: (input) {
+                          if (input.isEmpty) {
                             return 'กรุณากรอก email';
                           }
-                        }, 
-                        onSaved:(input)=>_email = input, 
-                        decoration: InputDecoration( 
+                        },
+                        onSaved: (input) => _email = input,
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          icon: Icon(Icons.email,
-                          color: Colors.grey,
+                          icon: Icon(
+                            Icons.email,
+                            color: Colors.grey,
                           ),
-                          hintText: 'Email',
+                          hintText: 'อีเมล์',
                         ),
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width/1.2,
+                      width: MediaQuery.of(context).size.width / 1.2,
                       height: 45,
                       margin: EdgeInsets.only(top: 32),
                       padding: EdgeInsets.only(
-                          top: 4,left: 16, right: 16, bottom: 4
-                      ),
+                          top: 4, left: 16, right: 16, bottom: 4),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(50)
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
                           color: Colors.white,
                           boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 5
-                            )
-                          ]
-                      ),
+                            BoxShadow(color: Colors.black12, blurRadius: 5)
+                          ]),
                       child: TextFormField(
-                        validator: (input){
-                          if(input.length < 6){
+                        validator: (input) {
+                          if (input.length < 6) {
                             return 'password ต้องมีความยาวไม่น้อยกว่า 6 ตัวอักษร';
                           }
                         },
-                        onSaved:(input)=>_password = input, 
+                        onSaved: (input) => _password = input,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          icon: Icon(Icons.vpn_key,
+                          icon: Icon(
+                            Icons.vpn_key,
                             color: Colors.grey,
                           ),
-                          hintText: 'Password',
+                          hintText: 'รหัสผ่าน',
                         ),
-                      ),        
+                      ),
                     ),
                     ForgetPassword(),
                     Spacer(),
                     GestureDetector(
-                        onTap: signin,
-                        child: Container(
-                          height: 45,
-                          width: MediaQuery.of(context).size.width/1.2,
-                          decoration: BoxDecoration(
+                      onTap: signin,
+                      child: Container(
+                        height: 45,
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                                Color(0xFFf45d27),
-                                Color(0xFFf5851f)
-                              ],
+                              colors: [Color(0xFFf45d27), Color(0xFFf5851f)],
                             ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50)
-                            )
-                          ),
-                          child: Center(
-                            child:   Text('Login'.toUpperCase(),
-                              style: TextStyle(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50))),
+                        child: Center(
+                          child: Text(
+                            'เข้าสู่ระบบ'.toUpperCase(),
+                            style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
+                      ),
                     ),
                   ],
                 ),
               ),
             )
           ],
-        ) ,
         ),
+      ),
     );
   }
-  Future<void> signin() async{
+
+  Future<void> signin() async {
     //Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     final formState = _formKey.currentState;
-    if(formState.validate()){
+    if (formState.validate()) {
       formState.save();
       try {
-        FirebaseUser use = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email,password: _password);
-        Navigator.push(context,MaterialPageRoute(builder:(context) => HomeScreen()));
+        FirebaseUser use = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email, password: _password);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       } catch (e) {
         print('error $e.message');
       }
@@ -202,56 +185,50 @@ class _LoginPageState extends State<LoginScreen> {
   }
 }
 
-Container _textField(String field_name,String ref,IconData icon ,BuildContext context){
+Container _textField(
+    String field_name, String ref, IconData icon, BuildContext context) {
   return Container(
-      width: MediaQuery.of(context).size.width/1.2,
-      height: 45,
-      margin: EdgeInsets.only(top: 32),
-      padding: EdgeInsets.only(
-          top: 4,left: 16, right: 16, bottom: 4
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-              Radius.circular(50)
-          ),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12,
-                blurRadius: 5
-            )
-          ]
-      ),
-      child: TextFormField(
-        validator: (input){
-          if(input.isEmpty){
-            return 'กรุณากรอก Email';
-          }
-        },
-        onSaved: (input) => ref = input,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          icon: Icon(icon,
-            color: Colors.grey,
-          ),
-          hintText: '$field_name',
+    width: MediaQuery.of(context).size.width / 1.2,
+    height: 45,
+    margin: EdgeInsets.only(top: 32),
+    padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(50)),
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)]),
+    child: TextFormField(
+      validator: (input) {
+        if (input.isEmpty) {
+          return 'กรุณากรอก Email';
+        }
+      },
+      onSaved: (input) => ref = input,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        icon: Icon(
+          icon,
+          color: Colors.grey,
         ),
-      ),        
+        hintText: '$field_name',
+      ),
+    ),
   );
 }
 
 class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Align( 
+    return Align(
       alignment: Alignment.centerRight,
-      child: Padding( 
-        padding: const EdgeInsets.only( 
-          top:16, right:32
-        ),
-        child:GestureDetector(
-          onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));},
-          child: Text('Register Account ?', 
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16, right: 32),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RegisterScreen()));
+          },
+          child: Text(
+            'ลงทะเบียน ?',
             style: TextStyle(color: Colors.grey),
           ),
         ),
@@ -297,29 +274,18 @@ class RegisterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 45,
-      width: MediaQuery.of(context).size.width/1.2,
+      width: MediaQuery.of(context).size.width / 1.2,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF03ecfc),
-            Color(0xFF03c2fc)
-          ],
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(50)
-        )
-      ),
-      child: Center(
-        child: Text('Register'.toUpperCase(),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold
+          gradient: LinearGradient(
+            colors: [Color(0xFF03ecfc), Color(0xFF03c2fc)],
           ),
+          borderRadius: BorderRadius.all(Radius.circular(50))),
+      child: Center(
+        child: Text(
+          'Register'.toUpperCase(),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 }
-
-
-

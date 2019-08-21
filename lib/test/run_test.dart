@@ -11,7 +11,7 @@ class TestApp extends StatelessWidget {
       title: 'WorkAroud application',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepOrange,
       ),
       home: HomeScreen(),
       routes: <String, WidgetBuilder>{
