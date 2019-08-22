@@ -51,7 +51,7 @@ class _HomePageState extends State<HomeScreen> {
     });
   }
 
-  void set_bmi() {
+  void set_bmi() async {
     setState(() {
       var _height = int.parse(height);
       var _width = int.parse(width);
