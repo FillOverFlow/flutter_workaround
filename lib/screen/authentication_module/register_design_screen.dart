@@ -91,6 +91,45 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Container(
         child: ListView(
           children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 4.5,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFFf45d27), Color(0xFFf5851f)]),
+                  borderRadius:
+                      BorderRadius.only(bottomLeft: Radius.circular(90))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Spacer(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.person,
+                      size: 90,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Spacer(),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 32,
+                        right: 32,
+                      ),
+                      child: Text(
+                        'ลงทะเบียน',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             /* Bottom Zone  */
             Form(
               key: _formKey,
@@ -102,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: <Widget>[
                     Container(
                       width: MediaQuery.of(context).size.width / 1.2,
+                      margin: EdgeInsets.only(top: 0),
                       height: 45,
                       padding: EdgeInsets.only(
                           top: 4, left: 16, right: 16, bottom: 4),
