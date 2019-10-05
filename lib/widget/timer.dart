@@ -1,3 +1,6 @@
+/**
+ * calculate time and add geolocation in to firebase
+ */
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,8 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:work_around/models/history.dart';
 import 'package:work_around/models/dependencies.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:work_around/screen/running_module/running_result.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key key}) : super(key: key);
@@ -20,11 +26,15 @@ class TimerPageState extends State<TimerPage> {
   var currentLocation;
   var _milliseconds;
 
+  /** var reference */
   String history_string = "";
   List<History> historys = List();
   History history;
+  Location location = new Location();
+  Geoflutterfire geo = Geoflutterfire();
   DatabaseReference historyRef;
-
+  Firestore firestore = Firestore();
+  DateTime datetime;
   final database = FirebaseDatabase.instance.reference();
 
   @override
@@ -34,6 +44,20 @@ class TimerPageState extends State<TimerPage> {
     historyRef = database.reference().child('history');
     historyRef.onChildAdded.listen(_onEntryAdded);
     historyRef.onChildChanged.listen(_onEntryChanged);
+    //createIdRunningRound();
+  }
+
+  //function to create id for query
+  createIdRunningRound() async {
+    //query last id
+    print("in createid");
+    return Firestore.instance
+        .collection("locations")
+        .orderBy("name")
+        .limit(1)
+        .snapshots()
+        .listen((data) => data.documents
+            .forEach((data) => print("test_id: ${data['name']}")));
   }
 
   //function get mylocation
@@ -93,8 +117,39 @@ class TimerPageState extends State<TimerPage> {
         } else {
           dependencies.stopwatch.start();
           _start_location = currloc;
+          //calculate and send geolocation to firebase
+          Timer.periodic(Duration(seconds: 5), (timer) {
+            if (!dependencies.stopwatch.isRunning) {
+              print("cancel time");
+              timer.cancel();
+            }
+            print('send data:${DateTime.now()}');
+            _addGeoPoint();
+          });
         }
       });
+    });
+  }
+
+  Future<DocumentReference> send_data_cloud_firestore(geo_data) {
+    firestore.collection('locations').add({
+      'position': geo_data,
+      'running_id': 'running_001',
+      'user': 'finfi',
+      'created_at': DateTime.now()
+    });
+    print("send data success ${DateTime.now()}");
+  }
+
+  Future<DocumentReference> _addGeoPoint() async {
+    var pos = await location.getLocation();
+    GeoFirePoint point =
+        geo.point(latitude: pos.latitude, longitude: pos.longitude);
+    firestore.collection('locations').add({
+      'position': point.data,
+      'running_round': 'running002',
+      'name': 'finfi',
+      'created_at': DateTime.now()
     });
   }
 
@@ -240,6 +295,7 @@ class TimerTextState extends State<TimerText> {
     timer = new Timer.periodic(
         new Duration(milliseconds: dependencies.timerMillisecondsRefreshRate),
         callback);
+    print("timer: ${timer}");
     super.initState();
   }
 
@@ -261,6 +317,7 @@ class TimerTextState extends State<TimerText> {
         seconds: seconds,
         minutes: minutes,
       );
+
       for (final listener in dependencies.timerListeners) {
         listener(elapsedTime);
       }

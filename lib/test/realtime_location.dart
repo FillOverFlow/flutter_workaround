@@ -13,10 +13,16 @@ class FireMap extends StatefulWidget {
 }
 
 class _FireMapState extends State<FireMap> {
+  static const LatLng _center = const LatLng(33.738045, 73.084488);
+  LatLng _lastMapPosition = _center;
   GoogleMapController mapController;
   Location location = new Location();
   Geoflutterfire geo = Geoflutterfire();
   Firestore firestore = Firestore();
+  final Set<Polyline> _polyline = {};
+  List<LatLng> latlng = List();
+  LatLng _dummy = LatLng(33.738045, 73.084488);
+
   final radius = new prefix0.BehaviorSubject<double>();
   var _stream;
   // Stream<dynamic> query;
@@ -24,17 +30,28 @@ class _FireMapState extends State<FireMap> {
 
   @override
   void initState() {
-    GeoFirePoint center = geo.point(latitude: 24.150, longitude: -110.32);
-    var collectionRef = firestore.collection('locations');
-    double radius = 50;
-    String fields = "position";
-    Stream<List<DocumentSnapshot>> stream = geo
-        .collection(collectionRef: collectionRef)
-        .within(center: center, radius: radius, field: fields);
-    setState(() {
-      _stream = stream;
-    });
+    var collectionRef = firestore
+        .collection('locations')
+        .where('running_round', isEqualTo: 'running001');
+    var georef = geo.collection(collectionRef: collectionRef);
+    georef.snapshot().listen((data) => data.documents.forEach((doc) {
+          GeoPoint pos = doc['position']['geopoint'];
+          LatLng _latLng = LatLng(pos.latitude, pos.longitude);
+          latlng.add(_latLng);
+          print("add new latlng ${latlng}");
+        }));
     super.initState();
+    setState(() {
+      latlng.add(_dummy);
+      //polyline
+      _polyline.add(Polyline(
+        polylineId: PolylineId(_lastMapPosition.toString()),
+        visible: true,
+        //latlng is List<LatLng>
+        points: latlng,
+        color: Colors.red,
+      ));
+    });
   }
 
   @override
@@ -43,10 +60,11 @@ class _FireMapState extends State<FireMap> {
       children: <Widget>[
         GoogleMap(
           initialCameraPosition:
-              CameraPosition(target: LatLng(24.150, -110.32), zoom: 10),
+              CameraPosition(target: LatLng(33.738045, 73.084488), zoom: 10),
           onMapCreated: _onMapcreated,
           myLocationEnabled: true,
           mapType: MapType.hybrid,
+          polylines: _polyline,
         ),
         Positioned(
           bottom: 50,
@@ -63,7 +81,7 @@ class _FireMapState extends State<FireMap> {
           child: FlatButton(
             child: Icon(Icons.pie_chart),
             color: Colors.red,
-            onPressed: () => _queryGeo(),
+            onPressed: () => _polyline_list(),
           ),
         )
       ],
@@ -106,7 +124,21 @@ class _FireMapState extends State<FireMap> {
         .collection('locations')
         .where('running_round', isEqualTo: 'running001')
         .snapshots()
-        .listen((data) =>
-            data.documents.forEach((doc) => print(doc['running_round'])));
+        .listen((data) => data.documents.forEach((doc) => print(doc['name'])));
+  }
+
+  _queryGeo2() {
+    var collectionRef = firestore.collection('locations');
+    var georef = geo.collection(collectionRef: collectionRef);
+    georef.snapshot().listen((data) => data.documents.forEach((doc) {
+          GeoPoint pos = doc['position']['geopoint'];
+          LatLng latLng = LatLng(pos.latitude, pos.longitude);
+
+          print("pos:${pos.latitude}");
+        }));
+  }
+
+  _polyline_list() {
+    print("polyline list: ${_polyline}");
   }
 }
