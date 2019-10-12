@@ -2,8 +2,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:random_string/random_string.dart';
 import 'login_design_screen.dart';
 import 'package:work_around/models/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(RegisterScreen());
 
@@ -26,10 +28,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  Firestore firestore = Firestore();
   String _email, _password;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<Profile> profiles = List();
   Profile profile;
+  String name_random = randomString(4);
   DatabaseReference profileRef;
   var width;
   var height;
@@ -60,22 +64,35 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void save_profile_to_firebase() {
-    print('in save profile to firebase');
     try {
-      FirebaseDatabase.instance
-          .reference()
-          .child('profile')
-          .child('finfin')
-          .set({
-        'name': 'finfin',
-        'width': width,
-        'height': height,
+      firestore.collection('profile').add({
+        'name': name_random,
+        'email': _email,
+        'weight': width,
+        'height': height
       });
-      print("send record success");
+      print("send datato profile");
     } catch (e) {
-      print("can't send $e");
+      print("can't send data $e");
     }
   }
+  // void save_profile_to_firebase() {
+  //   print('in save profile to firebase');
+  //   try {
+  //     FirebaseDatabase.instance
+  //         .reference()
+  //         .child('profile')
+  //         .child('finfin')
+  //         .set({
+  //       'name': 'finfin',
+  //       'width': width,
+  //       'height': height,
+  //     });
+  //     print("send record success");
+  //   } catch (e) {
+  //     print("can't send $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

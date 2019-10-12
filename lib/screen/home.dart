@@ -4,54 +4,63 @@ import 'package:work_around/screen/authentication_module/login_design_screen.dar
 import 'package:work_around/screen/running_history_module/running_history.dart';
 import 'package:work_around/screen/running_module/running.dart';
 import 'package:work_around/screen/settime_module/list_time_running.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
+  var email;
+  HomeScreen(this.email);
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(this.email);
 }
 
 class _HomePageState extends State<HomeScreen> {
   //database reference
   FirebaseDatabase database = new FirebaseDatabase();
   FirebaseDatabase database2 = new FirebaseDatabase();
+  Firestore firestore = Firestore();
   var width;
   var height;
   var _bmi;
+  var email;
   String image_path;
   String detail;
-  var profile =
-      FirebaseDatabase.instance.reference().child("profile").child("finfin");
+
+  _HomePageState(this.email);
+
   @override
   void initState() {
     // TODO: implement initState
+    setData_user();
     super.initState();
-    database
-        .reference()
-        .child('profile')
-        .child("finfin")
-        .child("width")
-        .once()
-        .then((DataSnapshot snapshot) {
-      print('Connected to second database and read ${snapshot.value}');
-      setState(() {
-        width = "${snapshot.value}";
-      });
-    });
-    database2
-        .reference()
-        .child('profile')
-        .child("finfin")
-        .child("height")
-        .once()
-        .then((DataSnapshot snapshot) {
-      print('Connected to second database and read ${snapshot.value}');
-      setState(() {
-        height = "${snapshot.value}";
-      });
-    });
+    // _queryProfile();
+    // database
+    //     .reference()
+    //     .child('profile')
+    //     .child("finfin")
+    //     .child("width")
+    //     .once()
+    //     .then((DataSnapshot snapshot) {
+    //   print('Connected to second database and read ${snapshot.value}');
+    //   setState(() {
+    //     width = "${snapshot.value}";
+    //   });
+    // });
+    // database2
+    //     .reference()
+    //     .child('profile')
+    //     .child("finfin")
+    //     .child("height")
+    //     .once()
+    //     .then((DataSnapshot snapshot) {
+    //   print('Connected to second database and read ${snapshot.value}');
+    //   setState(() {
+    //     height = "${snapshot.value}";
+    //   });
+    // });
   }
 
   void set_bmi() {
+    print("in set bmi");
     setState(() {
       var _height = int.parse(height);
       var _width = int.parse(width);
@@ -66,6 +75,30 @@ class _HomePageState extends State<HomeScreen> {
     });
   }
 
+  Future setData_user() async {
+    await _queryProfile();
+  }
+
+  String format(double n) {
+    return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 2);
+  }
+
+  void _queryProfile() {
+    print("in query");
+    firestore
+        .collection('profile')
+        .where('email', isEqualTo: email)
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) {
+              print("found weight ${doc['weight']} ");
+              print("found weight ${doc['height']} ");
+              setState(() {
+                width = doc['weight'];
+                height = doc['height'];
+              });
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     set_bmi();
@@ -77,8 +110,7 @@ class _HomePageState extends State<HomeScreen> {
         child: new ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: new Text("Fin Fin"),
-              accountEmail: new Text("Fin@gmail.com"),
+              accountEmail: new Text(email),
               currentAccountPicture: new CircleAvatar(
                 backgroundColor: Colors.lightBlue,
                 child: new Text("F"),
@@ -140,7 +172,8 @@ class _HomePageState extends State<HomeScreen> {
             children: <Widget>[
               Text("ส่วนสูง: ${height}"),
               Text("น้ำหนัก:${width}"),
-              Text("ค่าดัชนีมลวกาย (BMI):${_bmi}"),
+              Text("ค่าดัชนีมลวกาย (BMI):" +
+                  "${_bmi.toStringAsFixed(_bmi.truncateToDouble() == _bmi ? 0 : 2)}"),
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),

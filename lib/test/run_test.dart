@@ -13,7 +13,7 @@ class TestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: HomeScreen(),
+      home: HomeScreen(null),
       routes: <String, WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
         "/Map": (BuildContext context) => MapScreen()

@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:work_around/screen/home.dart';
+import 'package:work_around/screen/running_history_module/running_history.dart';
 import 'package:work_around/widget/map_result.dart';
 import 'dart:math' show cos, sqrt, asin;
 
 class RunningResultScreen extends StatefulWidget {
   @override
+  String runningId;
   var _start_location;
   var _end_location;
   String history;
-  RunningResultScreen(this._start_location, this._end_location, this.history);
+  RunningResultScreen(
+      this._start_location, this._end_location, this.runningId, this.history);
   _RunningResultState createState() => _RunningResultState(
-      this._start_location, this._end_location, this.history);
+      this._start_location, this._end_location, this.runningId, this.history);
 }
 
 class _RunningResultState extends State<RunningResultScreen> {
+  String history;
+  String runningId;
   var _start_location;
   var _end_location;
-  String history;
 
-  _RunningResultState(this._start_location, this._end_location, this.history);
+  _RunningResultState(
+      this._start_location, this._end_location, this.runningId, this.history);
 
   double cal_distance_marker(lat1, lng1, lat2, lng2) {
     var p = 0.017453292519943295;
@@ -44,7 +49,7 @@ class _RunningResultState extends State<RunningResultScreen> {
   void linkto_home() {
     print('[success] start location ${_end_location.longitude}');
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        context, MaterialPageRoute(builder: (context) => RunningHistory()));
   }
 
   @override
@@ -68,7 +73,8 @@ class _RunningResultState extends State<RunningResultScreen> {
                   //Card for map
                   width: 400,
                   height: 300,
-                  child: MapScreenResult(_start_location, _end_location),
+                  child: MapScreenResult(
+                      _start_location, _end_location, runningId),
                 ),
                 Center(
                   child: Column(

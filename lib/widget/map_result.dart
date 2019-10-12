@@ -9,19 +9,21 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MapScreenResult extends StatefulWidget {
   var _start_location;
   var _end_location;
+  String runningId;
 
-  MapScreenResult(this._start_location, this._end_location);
+  MapScreenResult(this._start_location, this._end_location, this.runningId);
   @override
-  _MyMapResultState createState() =>
-      _MyMapResultState(this._start_location, this._end_location);
+  _MyMapResultState createState() => _MyMapResultState(
+      this._start_location, this._end_location, this.runningId);
 }
 
 class _MyMapResultState extends State<MapScreenResult> {
   static const LatLng _center = const LatLng(33.738045, 73.084488);
   var _start_location;
   var _end_location;
+  String runningId;
 
-  _MyMapResultState(this._start_location, this._end_location);
+  _MyMapResultState(this._start_location, this._end_location, this.runningId);
 
   GoogleMapController mapController;
   Firestore firestore = Firestore();
@@ -40,7 +42,7 @@ class _MyMapResultState extends State<MapScreenResult> {
   void initState() {
     var collectionRef = firestore
         .collection('locations')
-        .where('running_round', isEqualTo: 'running002');
+        .where('running_round', isEqualTo: runningId);
     var geo_object = geo.collection(collectionRef: collectionRef);
     geo_object.snapshot().listen((data) => data.documents.forEach((doc) {
           GeoPoint pos = doc['position']['geopoint'];
@@ -50,8 +52,6 @@ class _MyMapResultState extends State<MapScreenResult> {
         }));
     super.initState();
     setState(() {
-      //fake polyline
-      latlng.add(_new);
       //polyline
       _polyline.add(Polyline(
         polylineId: PolylineId(_lastMapPosition.toString()),

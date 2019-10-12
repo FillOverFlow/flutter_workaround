@@ -13,6 +13,7 @@ import 'package:work_around/screen/running_module/running_result.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:random_string/random_string.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key key}) : super(key: key);
@@ -35,6 +36,7 @@ class TimerPageState extends State<TimerPage> {
   DatabaseReference historyRef;
   Firestore firestore = Firestore();
   DateTime datetime;
+  String runningId;
   final database = FirebaseDatabase.instance.reference();
 
   @override
@@ -44,20 +46,10 @@ class TimerPageState extends State<TimerPage> {
     historyRef = database.reference().child('history');
     historyRef.onChildAdded.listen(_onEntryAdded);
     historyRef.onChildChanged.listen(_onEntryChanged);
+    setState(() {
+      runningId = randomString(6);
+    });
     //createIdRunningRound();
-  }
-
-  //function to create id for query
-  createIdRunningRound() async {
-    //query last id
-    print("in createid");
-    return Firestore.instance
-        .collection("locations")
-        .orderBy("name")
-        .limit(1)
-        .snapshots()
-        .listen((data) => data.documents
-            .forEach((data) => print("test_id: ${data['name']}")));
   }
 
   //function get mylocation
@@ -131,25 +123,14 @@ class TimerPageState extends State<TimerPage> {
     });
   }
 
-  Future<DocumentReference> send_data_cloud_firestore(geo_data) {
-    firestore.collection('locations').add({
-      'position': geo_data,
-      'running_id': 'running_001',
-      'user': 'finfi',
-      'created_at': DateTime.now()
-    });
-    print("send data success ${DateTime.now()}");
-  }
-
   Future<DocumentReference> _addGeoPoint() async {
     var pos = await location.getLocation();
     GeoFirePoint point =
         geo.point(latitude: pos.latitude, longitude: pos.longitude);
     firestore.collection('locations').add({
       'position': point.data,
-      'running_round': 'running002',
+      'running_round': runningId,
       'name': 'finfi',
-      'created_at': DateTime.now()
     });
   }
 
@@ -189,7 +170,10 @@ class TimerPageState extends State<TimerPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => RunningResultScreen(
-                            _start_location, _end_location, history_string)));
+                            _start_location,
+                            _end_location,
+                            runningId,
+                            history_string)));
               },
             ),
             new FlatButton(
@@ -219,7 +203,7 @@ class TimerPageState extends State<TimerPage> {
 
     //set value to firebase
     history.record = "${minutes} m ${seconds} s";
-    history.user = "finfin";
+    history.user = "finfin"; //change this to email
     history.datetime = '$now';
 
     try {
@@ -261,12 +245,26 @@ class TimerPageState extends State<TimerPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 // buildFloatingButton(dependencies.stopwatch.isRunning ? "lap" : "reset", leftButtonPressed),
-                buildFloatingButton(
-                    dependencies.stopwatch.isRunning ? "เสร็จ" : "คืนค่า",
-                    finishRunningButtonPressed),
-                buildFloatingButton(
-                    dependencies.stopwatch.isRunning ? "พัก" : "เริ่ม",
-                    startButtonPressed),
+                // buildFloatingButton(
+                //     dependencies.stopwatch.isRunning ? "เสร็จ" : "คืนค่า",
+                //     finishRunningButtonPressed),
+                // buildFloatingButton(
+                //     dependencies.stopwatch.isRunning ? "พัก" : "เริ่ม",
+                //     startButtonPressed),
+                FloatingActionButton(
+                    backgroundColor: Colors.pink,
+                    heroTag: "stop",
+                    child: new Text(
+                        dependencies.stopwatch.isRunning ? "เสร็จ" : "คืนค่า",
+                        style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                    onPressed: finishRunningButtonPressed),
+                FloatingActionButton(
+                    backgroundColor: Colors.pink,
+                    heroTag: "start",
+                    child: new Text(
+                        dependencies.stopwatch.isRunning ? "พัก" : "เริ่ม",
+                        style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                    onPressed: startButtonPressed)
               ],
             ),
           ),

@@ -81,7 +81,7 @@ class _FireMapState extends State<FireMap> {
           child: FlatButton(
             child: Icon(Icons.pie_chart),
             color: Colors.red,
-            onPressed: () => _polyline_list(),
+            onPressed: () => _queryGeo2(),
           ),
         )
       ],
@@ -89,11 +89,10 @@ class _FireMapState extends State<FireMap> {
   }
 
   Future<DocumentReference> _addGeoPoint() async {
-    var pos = await location.getLocation();
-    GeoFirePoint point =
-        geo.point(latitude: pos.latitude, longitude: pos.longitude);
-    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(pos.latitude, pos.longitude), zoom: 17.0)));
+    //var pos = await location.getLocation();
+    GeoFirePoint point = geo.point(latitude: 33.738045, longitude: 73.084488);
+    mapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(33.738045, 73.084488), zoom: 17.0)));
     return firestore.collection('locations').add({
       'position': point.data,
       'running_round': 'running001',
@@ -128,14 +127,13 @@ class _FireMapState extends State<FireMap> {
   }
 
   _queryGeo2() {
-    var collectionRef = firestore.collection('locations');
-    var georef = geo.collection(collectionRef: collectionRef);
-    georef.snapshot().listen((data) => data.documents.forEach((doc) {
-          GeoPoint pos = doc['position']['geopoint'];
-          LatLng latLng = LatLng(pos.latitude, pos.longitude);
-
-          print("pos:${pos.latitude}");
-        }));
+    var collectionRef = firestore
+        .collection('profile')
+        .where('email', isEqualTo: 'test@test12.com')
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) {
+              print(doc['weight']);
+            }));
   }
 
   _polyline_list() {

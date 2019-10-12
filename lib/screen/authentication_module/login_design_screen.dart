@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:work_around/screen/home.dart';
 import 'register_design_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginPageState extends State<LoginScreen> {
   String _email, _password;
-
+  Firestore firestore = Firestore();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void intiState() {
@@ -176,8 +177,8 @@ class _LoginPageState extends State<LoginScreen> {
       try {
         FirebaseUser use = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HomeScreen(_email)));
       } catch (e) {
         print('error $e.message');
       }
