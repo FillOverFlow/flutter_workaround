@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:work_around/screen/authentication_module/login_design_screen.dart';
@@ -9,9 +10,8 @@ import 'package:work_around/screen/setting_module/setting.dart';
 
 class HomeScreen extends StatefulWidget {
   var email;
-  HomeScreen(this.email);
   @override
-  _HomePageState createState() => _HomePageState(this.email);
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomeScreen> {
@@ -22,8 +22,6 @@ class _HomePageState extends State<HomeScreen> {
   var email;
   String image_path = "";
   String detail = "";
-
-  _HomePageState(this.email);
 
   @override
   void initState() {
@@ -51,15 +49,25 @@ class _HomePageState extends State<HomeScreen> {
     await _queryProfile();
   }
 
+  Future get_current_user() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    print("user now ${user.email}");
+    return user;
+  }
+
   String format(double n) {
     return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 2);
   }
 
-  Future _queryProfile() {
+  Future _queryProfile() async {
     print("in query");
+    var user = await get_current_user();
+    setState(() {
+      email = user.email;
+    });
     firestore
         .collection('profile')
-        .where('email', isEqualTo: email)
+        .where('email', isEqualTo: user.email)
         .snapshots()
         .listen((data) => data.documents.forEach((doc) {
               print("found weight ${doc['weight']} ");
@@ -116,7 +124,7 @@ class _HomePageState extends State<HomeScreen> {
               title: new Text("ประวัติการวิ่ง"),
               trailing: new Icon(Icons.history),
               onTap: () {
-                Navigator.of(context).pop();
+                //Navigator.of(context).pop();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => RunningHistory()));
               },

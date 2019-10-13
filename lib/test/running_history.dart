@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:work_around/screen/home.dart';
 
 class RunningHistory extends StatefulWidget {
   @override
@@ -19,14 +19,19 @@ class _RunningHistoryState extends State<RunningHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ประวัติการวิ่ง"),
-      ),
-      body: Center(
-        child: ListView(
-          children: _places.map((place) => new Text(place)).toList(),
+        appBar: AppBar(
+            title: Text("ประวัติการวิ่ง"),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                })),
+        body: Center(
+          child: ListView(
+            children: _places.map((place) => new Text(place)).toList(),
           ),
-        )
-    );
+        ));
   }
 }

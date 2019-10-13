@@ -177,8 +177,8 @@ class _LoginPageState extends State<LoginScreen> {
       try {
         FirebaseUser use = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HomeScreen(_email)));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       } catch (e) {
         print('error $e.message');
       }

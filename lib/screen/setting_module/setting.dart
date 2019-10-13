@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:work_around/screen/authentication_module/login_design_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:work_around/screen/home.dart';
 import 'package:work_around/service/curd.dart';
 
 class Setting extends StatefulWidget {
@@ -111,7 +113,7 @@ class _SettingState extends State<Setting> {
                     print(e);
                   });
                 },
-              )
+              ),
             ],
           );
         });
@@ -125,8 +127,9 @@ class _SettingState extends State<Setting> {
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               })),
       body: Container(child: _listFirebase()),
     );
