@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:work_around/models/history.dart';
 import 'package:work_around/screen/home.dart';
 import 'package:work_around/screen/running_history_module/running_history.dart';
 import 'package:work_around/widget/map_result.dart';
@@ -11,6 +12,7 @@ class RunningResultScreen extends StatefulWidget {
   var _start_location;
   var _end_location;
   String history;
+  var speed;
   RunningResultScreen(
       this._start_location, this._end_location, this.runningId, this.history);
   _RunningResultState createState() => _RunningResultState(
@@ -40,6 +42,11 @@ class _RunningResultState extends State<RunningResultScreen> {
     return kcal;
   }
 
+  double cal_speed(distance, history) {
+    var _speed = distance / history;
+    return _speed;
+  }
+
   @override
   void intiState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -60,6 +67,7 @@ class _RunningResultState extends State<RunningResultScreen> {
         _end_location.latitude,
         _end_location.longitude);
     double kcal_from_running = cal_kcal(60, distance_marker);
+    double speed_per_m = cal_speed(distance_marker, 60);
     return Scaffold(
       appBar: AppBar(title: Text('ผลลัพธ์ การวิ่ง')),
       body: Container(
@@ -114,6 +122,22 @@ class _RunningResultState extends State<RunningResultScreen> {
                             alignment: Alignment.topRight,
                             child: Text(
                               '${history}',
+                            ),
+                          )
+                        ],
+                      ),
+                      Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'ความเร็วที่ใช้',
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              '${speed_per_m} m/s',
                             ),
                           )
                         ],

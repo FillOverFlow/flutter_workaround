@@ -5,6 +5,7 @@ import 'package:work_around/screen/running_history_module/running_history.dart';
 import 'package:work_around/screen/running_module/running.dart';
 import 'package:work_around/screen/settime_module/list_time_running.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:work_around/screen/setting_module/setting.dart';
 
 class HomeScreen extends StatefulWidget {
   var email;
@@ -14,52 +15,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomeScreen> {
-  //database reference
-  FirebaseDatabase database = new FirebaseDatabase();
-  FirebaseDatabase database2 = new FirebaseDatabase();
   Firestore firestore = Firestore();
   var width;
   var height;
   var _bmi;
   var email;
-  String image_path;
-  String detail;
+  String image_path = "";
+  String detail = "";
 
   _HomePageState(this.email);
 
   @override
   void initState() {
-    // TODO: implement initState
     setData_user();
     super.initState();
-    // _queryProfile();
-    // database
-    //     .reference()
-    //     .child('profile')
-    //     .child("finfin")
-    //     .child("width")
-    //     .once()
-    //     .then((DataSnapshot snapshot) {
-    //   print('Connected to second database and read ${snapshot.value}');
-    //   setState(() {
-    //     width = "${snapshot.value}";
-    //   });
-    // });
-    // database2
-    //     .reference()
-    //     .child('profile')
-    //     .child("finfin")
-    //     .child("height")
-    //     .once()
-    //     .then((DataSnapshot snapshot) {
-    //   print('Connected to second database and read ${snapshot.value}');
-    //   setState(() {
-    //     height = "${snapshot.value}";
-    //   });
-    // });
   }
 
-  void set_bmi() {
+  Future set_bmi() {
     print("in set bmi");
     setState(() {
       var _height = int.parse(height);
@@ -83,7 +55,7 @@ class _HomePageState extends State<HomeScreen> {
     return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 2);
   }
 
-  void _queryProfile() {
+  Future _queryProfile() {
     print("in query");
     firestore
         .collection('profile')
@@ -91,7 +63,7 @@ class _HomePageState extends State<HomeScreen> {
         .snapshots()
         .listen((data) => data.documents.forEach((doc) {
               print("found weight ${doc['weight']} ");
-              print("found weight ${doc['height']} ");
+              print("found height ${doc['height']} ");
               setState(() {
                 width = doc['weight'];
                 height = doc['height'];
@@ -151,9 +123,13 @@ class _HomePageState extends State<HomeScreen> {
             ),
             new Divider(),
             new ListTile(
-              title: new Text("ตั้งค่า"),
-              trailing: new Icon(Icons.settings),
-            ),
+                title: new Text("ตั้งค่า"),
+                trailing: new Icon(Icons.settings),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Setting(email)));
+                }),
             new ListTile(
                 title: new Text("ปิด"),
                 trailing: new Icon(Icons.exit_to_app),
@@ -171,7 +147,7 @@ class _HomePageState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text("ส่วนสูง: ${height}"),
-              Text("น้ำหนัก:${width}"),
+              Text("น้ำหนัก: ${width}"),
               Text("ค่าดัชนีมลวกาย (BMI):" +
                   "${_bmi.toStringAsFixed(_bmi.truncateToDouble() == _bmi ? 0 : 2)}"),
               Card(

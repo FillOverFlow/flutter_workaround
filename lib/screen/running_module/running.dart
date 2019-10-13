@@ -9,7 +9,7 @@ class RunningPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("เริ่งวิ่งกันเลย"),
+        title: new Text("เริ่มวิ่งกันเลย"),
       ),
       body: Container(
           margin: EdgeInsets.all(10.0),
