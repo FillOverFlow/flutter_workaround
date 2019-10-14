@@ -102,21 +102,29 @@ class _SettingState extends State<Setting> {
               FlatButton(
                 child: Text('Update'),
                 textColor: Colors.blue,
+                onPressed: () => update_firebase_profile(selectedDoc),
+              ),
+              FlatButton(
+                child: Text("Cancel"),
+                textColor: Colors.blue,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  crudObj.updateData(selectedDoc, {
-                    'weight': this.width,
-                    'height': this.height
-                  }).then((result) {
-                    // dialogTrigger(context);
-                  }).catchError((e) {
-                    print(e);
-                  });
                 },
-              ),
+              )
             ],
           );
         });
+  }
+
+  update_firebase_profile(selectedDoc) {
+    Navigator.of(context).pop();
+    print("width ${width} height ${height}");
+    crudObj.updateData(selectedDoc,
+        {'weight': this.width, 'height': this.height}).then((result) {
+      // dialogTrigger(context);
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   @override

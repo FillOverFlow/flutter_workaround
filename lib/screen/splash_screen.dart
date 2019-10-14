@@ -8,23 +8,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  navigationPage(user) {
-    if (user.uid == null) {
-      Navigator.of(context).pushReplacementNamed('/Login');
-    } else {
-      Navigator.of(context).pushReplacementNamed('/home');
-    }
+  navigationPage() {
+    Navigator.of(context).pushReplacementNamed('/Login');
   }
 
-  startTime() async {
-    var user = await get_current_user();
+  startTime() {
+    //var user = await get_current_user();
     var _duration = new Duration(seconds: 3);
-    return new Timer(_duration, navigationPage(user));
+    return new Timer(_duration, navigationPage());
   }
 
   Future get_current_user() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    print("user now ${user.uid}");
     return user;
   }
 

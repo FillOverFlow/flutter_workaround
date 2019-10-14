@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: SplashScreen(),
+      home: LoginScreen(),
       routes: <String, WidgetBuilder>{
         "/Login": (BuildContext context) => LoginScreen(),
         "/Map": (BuildContext context) => MapScreen(),
