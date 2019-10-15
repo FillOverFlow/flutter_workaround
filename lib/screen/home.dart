@@ -16,25 +16,33 @@ class HomeScreen extends StatefulWidget {
 
 class _HomePageState extends State<HomeScreen> {
   Firestore firestore = Firestore();
-  var width;
-  var height;
-  var _bmi;
-  var email;
+  var width = "0";
+  var height = "0";
+  var _bmi = 0.0;
+  var email = "";
   String image_path = "";
   String detail = "";
 
   @override
   void initState() {
     setData_user();
+    // get_current_user();
     super.initState();
   }
 
   Future set_bmi() {
-    print("in set bmi");
+    print("== set_bmi() ==");
     setState(() {
       var _height = int.parse(height);
       var _width = int.parse(width);
-      _bmi = _width / ((_height / 100) * (_height / 100));
+
+      print("=======================================");
+      print("Get height : ${_height}");
+      print("=======================================");
+
+      var _bmi2 = _width / ((_height / 100) * (_height / 100));
+      _bmi = _bmi2;
+      print("bmi: ${_bmi}");
       if (_bmi > 22.90) {
         image_path = "assets/images/fat.jpg";
         detail = "เริ่มอ้วน";
@@ -47,6 +55,7 @@ class _HomePageState extends State<HomeScreen> {
 
   Future setData_user() async {
     await _queryProfile();
+    // await set_bmi();
   }
 
   Future get_current_user() async {
@@ -60,28 +69,42 @@ class _HomePageState extends State<HomeScreen> {
   }
 
   Future _queryProfile() async {
-    print("in query");
+    print("== _queryProfile() ==");
     var user = await get_current_user();
     setState(() {
       email = user.email;
     });
     firestore
         .collection('profile')
-        .where('email', isEqualTo: user.email)
+        .where('email', isEqualTo: "admin@admin.com")
         .snapshots()
         .listen((data) => data.documents.forEach((doc) {
               print("found weight ${doc['weight']} ");
               print("found height ${doc['height']} ");
-              setState(() {
-                width = doc['weight'];
-                height = doc['height'];
-              });
+
+              print("=======================================");
+              print("Fuck : ${doc['height']}");
+              print("=======================================");
+
+              // set_bmi();
+              print("WTF : ${doc['weight']}");
+              width = doc['weight'];
+              height = doc['height'];
+
+              set_bmi();
+
+              print(":)");
+
+              // setState(() {
+              // width = doc['weight'];
+              // height = doc['height'];
+              // });
             }));
   }
 
   @override
   Widget build(BuildContext context) {
-    set_bmi();
+    // set_bmi();
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('หน้าหลัก'),
@@ -156,15 +179,21 @@ class _HomePageState extends State<HomeScreen> {
             children: <Widget>[
               Text("ส่วนสูง: ${height}"),
               Text("น้ำหนัก: ${width}"),
-              Text("ค่าดัชนีมลวกาย (BMI):" +
-                  "${_bmi.toStringAsFixed(_bmi.truncateToDouble() == _bmi ? 0 : 2)}"),
+              Text("ค่าดัชนีมลวกาย (BMI):" + "${_bmi}"),
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 elevation: 3.0,
+                // child: Column(
+                //   children: <Widget>[Text(detail), Image.asset(image_path)],
+                // ),
                 child: Column(
-                  children: <Widget>[Text(detail), Image.asset(image_path)],
-                ),
+                    // child: condition == true ? new Container() : new Container()
+                    // condition? Text("True"): null
+                    children: <Widget>[
+                      Text(detail),
+                      image_path != "" ? Image.asset(image_path) : Container()
+                    ]),
               ),
             ],
           ),
