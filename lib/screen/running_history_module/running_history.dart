@@ -1,7 +1,9 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:work_around/models/history.dart';
+import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:work_around/screen/running_module/running_result.dart';
 
 class RunningHistory extends StatefulWidget {
   @override
@@ -9,94 +11,77 @@ class RunningHistory extends StatefulWidget {
 }
 
 class _RunningHistoryState extends State<RunningHistory> {
-  DatabaseReference historyRef;
-  FirebaseDatabase database = new FirebaseDatabase();
+  Position start_location;
+  Position end_location;
+  var email = "";
 
-  List<History> historys = List();
-  History history;
-
-  _onEntryAdded(Event event) {
-    setState(() {
-      historys.add(History.fromSnapshot(event.snapshot));
-    });
-  }
-
-  _onEntryChanged(Event event) {
-    var old = historys.singleWhere((entry) {
-      return entry.key == event.snapshot.key;
-    });
-    setState(() {
-      historys[historys.indexOf(old)] = History.fromSnapshot(event.snapshot);
-    });
-  }
-
-  void remove_history(int index) {
-    setState(() {
-      historys.removeAt(index);
-    });
-  }
-
+  @override
   void initState() {
-    // TODO: implement initState
+    query_history();
     super.initState();
-    historyRef = database.reference().child('history');
-    historyRef.onChildAdded.listen(_onEntryAdded);
-    historyRef.onChildChanged.listen(_onEntryChanged);
-    database.reference().child('history').once().then((DataSnapshot snapshot) {
-      print('Connected to second database and read ${snapshot.value}');
+  }
+
+  query_history() async {
+    var user = await get_current_user();
+    setState(() {
+      email = "${user.email}";
     });
   }
 
-  Widget _removeWidget(int index) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('ต้องการที่จะลบ ประวัตินี้หรือไม่ ?'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('ยกเลิก'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              FlatButton(
-                child: Text('ลบ'),
-                onPressed: () {
-                  remove_history(index);
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  DatabaseReference getHistory() {
-    return historyRef;
+  Future get_current_user() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    print("user now ${user.email}");
+    return user;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ประวัติการวิ่ง'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            child: FirebaseAnimatedList(
-              query: historyRef,
-              itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                  Animation<double> animation, int index) {
-                return new ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text(historys[index].datetime),
-                  subtitle: Text(historys[index].record),
+        appBar: AppBar(
+          title: Text("ประวัติการวิ่ง"),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection('history')
+              .where("user", isEqualTo: email)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return new Text('Loading...');
+              default:
+                return new ListView(
+                  children:
+                      snapshot.data.documents.map((DocumentSnapshot document) {
+                    start_location = Position(
+                        latitude: document['start_locatio_lat'],
+                        longitude: document['start_location_lng']);
+                    end_location = Position(
+                        latitude: document['end_location_lat'],
+                        longitude: document['end_location_lng']);
+                    return new ListTile(
+                      leading: Icon(Icons.history),
+                      onTap: () {
+                        print("start_locaiont ${start_location}");
+                        //Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RunningResultScreen(
+                                    start_location,
+                                    end_location,
+                                    document['runningId'],
+                                    document['record'])));
+                      },
+                      title: new Text(document['datetime']),
+                      subtitle: new Text(document['record']),
+                    );
+                  }).toList(),
                 );
-              },
-            ),
-          )
-        ],
-      ),
-    );
+            }
+          },
+        ));
   }
 }

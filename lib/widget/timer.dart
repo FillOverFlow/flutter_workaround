@@ -2,6 +2,7 @@
  * calculate time and add geolocation in to firebase
  */
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -124,13 +125,14 @@ class TimerPageState extends State<TimerPage> {
   }
 
   Future<DocumentReference> _addGeoPoint() async {
+    var user = await get_current_user();
     var pos = await location.getLocation();
     GeoFirePoint point =
         geo.point(latitude: pos.latitude, longitude: pos.longitude);
     firestore.collection('locations').add({
       'position': point.data,
       'running_round': runningId,
-      'name': 'finfi',
+      'name': user.email,
     });
   }
 
@@ -165,7 +167,7 @@ class TimerPageState extends State<TimerPage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 dependencies.stopwatch.stop();
-                save_record_to_history();
+                save_record_to_firebase();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -186,6 +188,43 @@ class TimerPageState extends State<TimerPage> {
         );
       },
     );
+  }
+
+  Future get_current_user() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    print("user now ${user.email}");
+    return user;
+  }
+
+  void save_record_to_firebase() async {
+    var user = await get_current_user();
+    //create datetime format
+    var now = new DateTime.now();
+    var dateNow = new DateFormat("dd-MM-yyyy").format(now);
+    _milliseconds = dependencies.stopwatch.elapsedMilliseconds;
+    final int hundreds = (_milliseconds / 10).truncate();
+    final int seconds = (hundreds / 100).truncate();
+    final int minutes = (seconds / 60).truncate();
+    setState(() {
+      history_string = "${minutes} m ${seconds} s";
+    });
+
+    //set value to firebase
+    history.record = "${minutes} m ${seconds} s";
+    history.user = "finfin"; //change this to email
+    history.datetime = '$now';
+
+    //save to firestore
+    firestore.collection("history").add({
+      "datetime": '${history.datetime}',
+      "user": "${user.email}",
+      "record": "${history.record}",
+      "start_locatio_lat": _start_location.latitude,
+      "start_location_lng": _start_location.longitude,
+      "end_location_lat": _end_location.latitude,
+      "end_location_lng": _end_location.longitude,
+      "runningId": "${runningId}"
+    });
   }
 
   void save_record_to_history() {

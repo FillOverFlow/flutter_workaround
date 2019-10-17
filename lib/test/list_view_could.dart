@@ -27,6 +27,8 @@ class _ListViewCloundState extends State<ListViewClound> {
                   children:
                       snapshot.data.documents.map((DocumentSnapshot document) {
                     return new ListTile(
+                      leading: Icon(Icons.history),
+                      onTap: () => print("on tap .. ${document['name']}"),
                       title: new Text(document['email']),
                       subtitle: new Text(document['name']),
                     );

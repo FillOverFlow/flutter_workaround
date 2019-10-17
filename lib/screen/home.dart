@@ -179,7 +179,10 @@ class _HomePageState extends State<HomeScreen> {
             children: <Widget>[
               Text("ส่วนสูง: ${height}"),
               Text("น้ำหนัก: ${width}"),
-              Text("ค่าดัชนีมลวกาย (BMI):" + "${_bmi}"),
+              _bmi > 1
+                  ? Text("ค่าดัชนีมลวกาย (BMI):" +
+                      "${_bmi.toStringAsFixed(_bmi.truncateToDouble() == _bmi ? 0 : 2)}")
+                  : Text("ค่าดัชนีมลวกาย (BMI):" + "${_bmi}"),
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),

@@ -105,7 +105,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '${distance_marker} km.',
+                              '${distance_marker.toStringAsFixed(distance_marker.truncateToDouble() == distance_marker ? 0 : 2)} km.',
                             ),
                           )
                         ],
@@ -137,7 +137,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '${speed_per_m} m/s',
+                              '${speed_per_m.toStringAsFixed(speed_per_m.truncateToDouble() == speed_per_m ? 0 : 2)} m/s',
                             ),
                           )
                         ],
@@ -153,7 +153,7 @@ class _RunningResultState extends State<RunningResultScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              '${kcal_from_running} kcal.',
+                              '${kcal_from_running.toStringAsFixed(kcal_from_running.truncateToDouble() == kcal_from_running ? 0 : 2)} kcal.',
                             ),
                           )
                         ],
